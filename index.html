@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gabriel Walker — Dados e Automação</title>
+<meta name="description" content="Responsável, sozinho, pela plataforma de dados de uma frota de cerca de 150 veículos em quatro filiais: 9 pipelines em Python que consolidam 22 conjuntos de dados de 7 origens exte">
+<style>
+:root{--bg:#fbfbfa;--fg:#1c1b19;--suave:#5c5a55;--linha:#e2e0db;--caixa:#fff;
+--acento:#1a5f7a;--codigo:#f2f1ee}
+@media (prefers-color-scheme:dark){:root{--bg:#131312;--fg:#eceae5;--suave:#9c9890;
+--linha:#2c2b28;--caixa:#1b1b19;--acento:#6fb3cc;--codigo:#1f1f1d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.env{max-width:820px;margin:0 auto;padding:0 24px}
+header{padding:72px 0 40px}
+h1{font-size:2.4rem;line-height:1.15;margin:0 0 6px;letter-spacing:-.02em}
+.papel{font-size:1.12rem;color:var(--acento);font-weight:600;margin:0 0 18px}
+.resumo{font-size:1.06rem;color:var(--suave);max-width:64ch;margin:0 0 22px}
+.links a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--linha);
+margin-right:18px;font-size:.95rem;white-space:nowrap}
+.links a:hover{border-color:var(--acento);color:var(--acento)}
+/* Grade com fundo da PRÓPRIA CAIXA e separação por borda, não por vão.
+   Duas tentativas anteriores falharam: com o fundo no contêiner, a fileira
+   incompleta virava um retângulo cinza; com flex, os dois últimos cartões
+   esticavam para metade da largura cada. Assim a célula que sobra fica
+   simplesmente vazia, do mesmo tom do resto. */
+.numeros{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));
+background:var(--caixa);border:1px solid var(--linha);border-radius:8px;
+overflow:hidden;margin:40px 0}
+.numeros div{padding:18px;border-right:1px solid var(--linha);
+border-bottom:1px solid var(--linha)}
+.numeros b{display:block;font-size:1.75rem;letter-spacing:-.02em;line-height:1.1}
+.numeros b{display:block;font-size:1.75rem;letter-spacing:-.02em;line-height:1.1}
+.numeros span{font-size:.82rem;color:var(--suave)}
+h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;color:var(--suave);
+font-weight:600;margin:64px 0 20px;padding-bottom:8px;border-bottom:1px solid var(--linha)}
+h3{font-size:1.05rem;margin:32px 0 10px}
+h4{font-size:.95rem;margin:22px 0 8px;color:var(--suave)}
+article{border:1px solid var(--linha);border-radius:8px;padding:26px 28px;
+margin-bottom:26px;background:var(--caixa)}
+article>h3:first-child{margin-top:0;font-size:1.25rem}
+.meta{font-size:.85rem;color:var(--suave);margin:0 0 16px}
+pre{background:var(--codigo);padding:16px;border-radius:6px;overflow-x:auto;
+font-size:.8rem;line-height:1.5;margin:14px 0}
+code{background:var(--codigo);padding:1px 5px;border-radius:3px;font-size:.88em}
+ul{padding-left:20px}li{margin-bottom:8px}
+.grupo{margin-bottom:14px;font-size:.95rem}
+.grupo b{color:var(--suave);font-weight:600}
+footer{margin:80px 0 60px;padding-top:24px;border-top:1px solid var(--linha);
+font-size:.85rem;color:var(--suave)}
+.demo{border:1px solid var(--linha);border-radius:8px;overflow:hidden;
+background:var(--caixa)}
+.demo>a{display:block;line-height:0}
+.demo img{width:100%;height:auto;display:block}
+.demo .leg{padding:14px 18px;font-size:.88rem;color:var(--suave);line-height:1.55}
+.demo .leg b{color:var(--fg)}
+.demo .leg .abrir{display:inline-block;width:auto;line-height:1.4;margin-top:10px;padding:7px 14px;border-radius:6px;
+background:var(--acento);color:#fff;text-decoration:none;font-size:.85rem;
+font-weight:600}
+@media(max-width:560px){header{padding:44px 0 28px}h1{font-size:1.85rem}}
+</style>
+</head>
+<body>
+<div class="env">
+<header>
+  <h1>Gabriel Walker</h1>
+  <p class="papel">Analista de Dados Pleno · Engenheiro de Dados Pleno · Cientista de Dados Júnior</p>
+  <p class="resumo">Responsável, sozinho, pela plataforma de dados de uma frota de cerca de 150 veículos em quatro filiais: 9 pipelines em Python que consolidam 22 conjuntos de dados de 7 origens externas e 16 projetos Power BI em produção, com 325 medidas em DAX. Tecnólogo em Análise e Desenvolvimento de Sistemas, com formação em ciência de dados pela EBAC e inglês avançado.</p>
+  <p class="links">
+    <a href="mailto:gabrielwalker14@gmail.com">gabrielwalker14@gmail.com</a>
+    <a href="https://www.linkedin.com/in/gbrwalker">LinkedIn</a>
+    <a href="https://github.com/gbrwalker">GitHub</a>
+    <span style="color:var(--suave);font-size:.95rem">Pimenta Bueno – RO</span>
+  </p>
+</header>
+
+<div class="numeros"><div><b>9</b><span>pipelines de produção</span></div><div><b>16</b><span>projetos Power BI</span></div><div><b>29</b><span>arquivos de teste</span></div><div><b>150</b><span>veículos</span></div><div><b>20</b><span>usuários</span></div><div><b>325</b><span>medidas em DAX</span></div><div><b>22</b><span>conjuntos de dados</span></div></div>
+
+<h2>Painel ao vivo</h2>
+<div class="demo">
+  <a href="paineis/indicadores-de-manutencao.html">
+    <img src="paineis/indicadores-de-manutencao.png"
+         alt="Painel de indicadores de manutenção de frota, com filtros, cartões de
+              indicador, série mensal e listas por componente, unidade e criticidade">
+  </a>
+  <p class="leg">
+    <b>Indicadores de manutenção de frota.</b> Painel real, dado fictício.
+    Filtros, busca por placa ou componente e recálculo instantâneo — clique e use.
+    A base é gerada por script com semente fixa: 150 veículos, 1.180 ordens de
+    serviço, mesma forma do dado de produção e nenhum dado de produção dentro.
+    Página autocontida, sem servidor e sem requisição externa.
+    <a class="abrir" href="paineis/indicadores-de-manutencao.html">Abrir o painel</a>
+  </p>
+</div>
+
+<h2>Casos</h2>
+<article><h3>Acompanhamento de produção e paradas de máquina em painel ao vivo</h3><p class="meta">Gerente de produção — definiu o indicador, montou a planilha e o painel · 2023-10 a 2024-09</p><h4>Problema</h4><p>Uma indústria alimentícia operava com quatro equipes: produção e empacotamento,
+cada uma em turno diurno e noturno. Toda sexta-feira havia reunião de resultados
+com o sócio-proprietário para revisar os gaps da semana.</p>
+<p>A discussão era sobre memória. Sabia-se que a máquina havia parado, mas não por
+quanto tempo, nem quantas vezes, nem por qual motivo com que frequência. Sem
+isso, a reunião virava opinião: cada turno lembrava o próprio problema, e a
+decisão saía de quem argumentava melhor, não de onde a perda era maior.</p>
+<p>A pergunta de fundo era de capacidade: a fábrica não dava conta da demanda de
+pedidos, e a fila de espera crescia. A hipótese em cima da mesa era que havia
+perda escondida nas paradas — que dava para produzir mais no mesmo tempo.</p>
+<p>A operação rodava com quatro equipes — produção e empacotamento, cada uma em
+turno diurno e noturno.</p><h4>Arquitetura</h4><pre>apontamento das equipes, durante a semana
+        │
+        ▼
+planilha compartilhada em nuvem          entrada estruturada por turno,
+   (uma linha por parada)                máquina e motivo
+        │
+        ▼
+painel conectado à planilha              atualiza conforme o apontamento
+                                         é digitado; nada de exportar
+        │
+        ▼
+reunião semanal de resultados            a tela é a pauta
+</pre>
+<p>A decisão de fundo é a mais simples e a mais fácil de errar: **o dado é digitado
+uma vez, onde acontece, e o painel lê dali.** Não há passo de consolidação, não
+há alguém montando o relatório na véspera, e por isso não há versão divergente
+circulando.</p><h4>Decisões técnicas</h4><ul><li><strong>Planilha compartilhada como fonte, não como relatório.</strong> A planilha deixou de ser o lugar onde se olha o número e passou a ser só o lugar onde se digita. Quem olha, olha o painel. Alternativa descartada: manter a análise dentro da própria planilha, com aba de resumo — funciona até duas pessoas editarem a mesma célula, e ninguém consegue dizer qual cópia é a boa.</li></ul>
+<ul><li><strong>Painel conectado à planilha, não exportação semanal.</strong> O número na tela é o número digitado, sem intervalo entre um e outro. Alternativa descartada: gerar um relatório na quinta para a reunião da sexta — que é o que cria a pergunta &quot;esse dado é de quando?&quot; no meio da discussão.</li></ul>
+<ul><li><strong>Uma linha por parada, com motivo obrigatório.</strong> É o que permite somar por máquina, por turno e por causa. Alternativa descartada: registrar só o total de horas paradas por dia, que é mais rápido de preencher e não responde nenhuma pergunta útil.</li></ul><h4>Resultado</h4><ul><li><strong>A reunião semanal passou a discutir dado apurado em vez de memória</strong>, com o painel atualizado no momento em que o apontamento é digitado.</li><li><strong>A medição mostrou que não havia o que otimizar.</strong> As paradas estavam concentradas e eram necessárias — manutenção, troca, higienização. A hipótese de origem, de que havia perda escondida a recuperar, caiu. Esse é o resultado real deste caso, e é um resultado: economizou o esforço de perseguir uma eficiência que não existia.</li><li><strong>Com a produção no teto, a decisão correta deixou de ser otimizar e passou a ser ampliar.</strong> O acompanhamento sustentou a abertura de um terceiro turno, de madrugada, dimensionado pela demanda de pedidos e pela fila de espera que o registro tornou visível.</li><li><strong>A produção subiu cerca de 30% com o terceiro turno.</strong> O ganho veio de acrescentar capacidade, não de eficiência arrancada do processo existente — e foi a medição que mostrou que essa eficiência não existia para ser arrancada. Número aproximado, informado por quem conduziu a operação, sem apuração formal.</li></ul></article><article><h3>Camada analítica de frota — 16 projetos versionados em Git</h3><p class="meta">Autor e único mantenedor — modelagem, medidas, relatórios e padrão visual · 2026-06 a atual</p><h4>Problema</h4><p>Os painéis de frota existiam como arquivos binários de Power BI, cada um
+salvo por cima do anterior. Isso produz três problemas que só aparecem depois:
+não há histórico — não dá para saber quem mudou qual medida, quando, nem por
+quê; não há revisão — arquivo binário não tem diferença legível; e não há
+volta — uma medida quebrada só se recupera do backup que alguém lembrou de
+fazer.</p>
+<p>Junto disso, cada painel repetia sua própria lógica de transformação, seu
+próprio jeito de nomear tabela e seu próprio padrão visual. O mesmo indicador
+saía diferente em dois relatórios sem que ninguém soubesse qual estava certo.</p>
+<p>O estado anterior está medido em <code>met-003</code>: a análise começava por baixar
+relatório de cada sistema e preencher planilha com dado bruto, o que consumia
+um dia inteiro de trabalho de um analista por ciclo. Hoje o dado chega pronto
+ao painel e a análise começa na abertura.</p>
+<p>Os painéis atendem cerca de 20 pessoas da operação, sobre uma frota de
+aproximadamente 150 veículos distribuídos em quatro filiais.</p><h4>Arquitetura</h4><pre>camada de arquivos da plataforma de dados
+        │
+        ▼
+fluxos de dados compartilhados            transformação única, reaproveitada
+        │                                 por vários modelos
+        ▼
+16 projetos em formato texto              modelo semântico + relatório,
+   versionados em Git                     ambos legíveis e comparáveis
+        │
+        ▼
+publicação nos espaços de trabalho        relatórios por área de negócio
+</pre>
+<p>Cada projeto é uma pasta com o modelo semântico e o relatório em formato de
+texto, não em binário. Tabelas seguem prefixo por papel — fato, dimensão e
+calculada — e as medidas ficam centralizadas em tabela própria, não espalhadas
+pelas fatos.</p><h4>Decisões técnicas</h4><ul><li><strong>Versionar o projeto em formato texto, não o binário.</strong> É a decisão que sustenta todas as outras: modelo e relatório viram arquivos legíveis, com diferença revisável, histórico por medida e possibilidade de voltar atrás. Alternativa descartada: continuar com o binário e disciplinar backups — é o que já existia, e é o que produziu o problema.</li></ul>
+<ul><li><strong>Concentrar a transformação em fluxos compartilhados.</strong> Vários modelos liam a mesma origem e cada um transformava do seu jeito. A transformação subiu para uma camada compartilhada, consumida por todos. Alternativa descartada: padronizar por convenção, confiando que cada modelo repetisse o mesmo passo a passo — que é exatamente o que falha em silêncio.</li></ul>
+<ul><li><strong>Não migrar o modelo de estoque para a camada compartilhada, e fechar a decisão por escrito.</strong> Esse modelo usa atualização incremental, que a camada compartilhada não suporta no nível de licença disponível. Migrar faria cada atualização reler três anos de arquivo diário contra um teto de duas horas de janela. Alternativa descartada: migrar por consistência — a consistência custaria a atualização do painel da diretoria.</li></ul>
+<ul><li><strong>Padrão visual próprio para as páginas de maior densidade.</strong> Páginas com muitos indicadores passaram a ser desenhadas como visual único, em vez de dezenas de visuais nativos empilhados. O ganho foi medido pela auditoria de conformidade do próprio Power BI. Alternativa descartada: manter o nativo, que é mais simples de manter mas não entregava a densidade pedida sem degradar a auditoria.</li></ul>
+<ul><li><strong>Fixar a versão das ferramentas de automação do modelo, e tratar atualização como ato manual.</strong> As ferramentas usadas para editar o modelo sobem na inicialização da sessão, antes de qualquer verificação. Com versão flutuante, cada sessão executaria o que estivesse publicado naquele minuto, sem registro e sem reprodutibilidade. A regra escrita descarta qualquer versão publicada há menos de 48 horas — janela em que uma publicação maliciosa ainda não foi detectada pelo ecossistema. Alternativa descartada: usar sempre a última versão, que é conveniente e transfere a decisão de segurança para o acaso.</li></ul>
+<ul><li><strong>Barreiras automáticas contra comando destrutivo e exposição de segredo.</strong> O repositório tem verificações que interceptam operações perigosas antes de executarem. Alternativa descartada: confiar na atenção de quem edita — que funciona até o dia cansado.</li></ul>
+<ul><li><strong>Medir antes de concluir, inclusive sobre o próprio repositório.</strong> Está escrito na documentação do projeto: afirmação sobre o repositório sai de leitura de código, de histórico ou de execução, nunca de suposição; quando não deu para medir, diz-se que não mediu. A regra nasceu de erro real — uma tabela de contagem de painéis divergia da realidade em três pontos.</li></ul><h4>Resultado</h4><ul><li><strong>16 projetos Power BI</strong> versionados em Git, somando <strong>325 medidas em DAX</strong>, <strong>282 tabelas</strong>, <strong>98 páginas</strong> e <strong>1.004 visuais</strong>. Fonte: contagem no repositório em 2026-08-23.</li><li><strong>727 commits</strong> entre 2026-06-29 e 2026-08-12. Fonte: histórico do git.</li><li><strong>Cerca de 20 pessoas</strong> consomem os painéis, sobre uma frota de aproximadamente <strong>150 veículos</strong> em quatro filiais. Fonte: <code>esc-004</code>, <code>esc-005</code>.</li><li><strong>Auditoria de conformidade de um dos painéis caiu de 39 erros e 18 avisos para 3 erros e 5 avisos</strong> após a adoção do padrão visual próprio; outro fechou em <strong>0 erros e 6 avisos</strong>, sendo os 6 estruturais — o validador não reconhece o identificador do visual customizado. Fonte: relatório de auditoria do próprio Power BI.</li><li><strong>Achados de qualidade de dados que a modelagem expôs</strong>, todos relativos: - <strong>77% da despesa de manutenção não tinha ordem de serviço vinculada</strong> — a conciliação só cobria a minoria dos documentos. - Um dos painéis de segurança <strong>descartava 21% dos eventos em silêncio</strong>, por cadastro incompleto de responsável. - <strong>30% dos meses-motorista</strong> tinham checklist preenchido <strong>abaixo de quatro minutos</strong> — abaixo do tempo mínimo para de fato olhar o veículo. O achado virou régua de qualidade, com faixa mínima e máxima. - Uma tabela morta deixava <strong>66% de um indicador órfão</strong>, e nomes duplicados no cadastro inflavam a contagem de um painel.</li></ul></article><article><h3>Plataforma de dados de frota — ingestão, orquestração e entrega</h3><p class="meta">Autor e único mantenedor — arquitetura, implementação, operação · 2026-03 a atual</p><h4>Problema</h4><p>A operação de frota de uma distribuidora com quatro filiais e cerca de 150
+veículos dependia de sete origens de dados que não conversavam entre si: sistemas de gestão de
+manutenção, de ponto eletrônico, de abastecimento, de checklists de segurança,
+de distribuição e uma caixa de e-mail corporativa por onde chegavam
+comprovantes de manutenção preventiva.</p>
+<p>Nenhuma dessas origens entregava dado pronto para análise. Parte tinha API,
+parte só tinha portal web com login, e parte só existia como anexo de e-mail.
+Consolidar exigia que alguém entrasse em cada sistema, exportasse relatório,
+tratasse à mão e colasse numa planilha — trabalho que se repetia a cada ciclo
+de análise e cujo resultado envelhecia no dia seguinte.</p>
+<p>O custo disso está medido em <code>met-003</code>: **um dia inteiro de trabalho de um
+analista por ciclo de análise**, gasto antes de a análise começar. Baixar o
+relatório de cada origem, colar o dado bruto na planilha, tratar ali e só
+então olhar para o número. Hoje o dado chega pronto ao painel, atualizado até
+seis vezes ao dia, e a análise começa na abertura.</p><h4>Arquitetura</h4><pre>7 origens externas                     APIs REST, portais com login,
+   (22 conjuntos de dados)             caixa de e-mail corporativa
+        │
+        ▼
+9 pipelines em Python                  extração, transformação leve,
+   (9 workflows agendados)             deduplicação e validação
+        │
+        ▼
+orquestração em CI/CD                  a cada 2h das 7h às 18h, execução sob
+                                       demanda, notificação de falha por e-mail
+        │
+        ▼
+camada de arquivos comprimidos         contrato estável: codificação, separador
+                                       e compactação fixos
+        │
+        ▼
+orquestração da atualização            dispara o refresh do conjunto de dados
+                                       assim que a carga termina
+        │
+        ▼
+camada semântica e relatórios          consumo pela plataforma de BI
+</pre>
+<p>O repositório se organiza em pacotes por origem, mais um pacote compartilhado
+com o cliente de armazenamento, o catálogo de sistemas e utilitários comuns.
+Dois dos 22 conjuntos não vêm de fora: são derivados, calculados a partir do
+cruzamento de outros dois.</p><h4>Decisões técnicas</h4><ul><li><strong>Orquestrar com o CI do próprio repositório, não com um orquestrador dedicado.</strong> A operação tem 9 pipelines com agendamento simples e sem dependência complexa entre si. O CI já dá agendamento, execução sob demanda, histórico de execução, cofre de segredos e notificação — de graça e sem servidor para manter. Alternativa descartada: orquestrador dedicado, que traria interface de dependências e reprocessamento, mas cobraria um servidor de pé e uma segunda infraestrutura para vigiar, num time de uma pessoa.</li></ul>
+<ul><li><strong>Trocar o data warehouse por uma camada de arquivos comprimidos.</strong> A primeira versão gravava em data warehouse na nuvem. Migrou-se para arquivos comprimidos lidos diretamente pela camada de BI. Alternativa descartada: manter o warehouse — ele resolvia consulta ad hoc em SQL, mas o volume não justificava o custo recorrente, e a única consumidora dos dados era a plataforma de BI, que lê arquivo tão bem quanto tabela.</li></ul>
+<ul><li><strong>Migração em duas fases, mudando uma variável por vez.</strong> A migração seguinte — tirar os arquivos da nuvem e passar a gravar em servidor local, com leitura por gateway — foi deliberadamente partida em duas: primeiro muda <em>onde roda e onde grava</em>, mantendo o formato de arquivo byte a byte idêntico; só depois se troca o formato. Alternativa descartada: fazer as duas de uma vez, que era mais rápido no papel — e deixaria três mudanças simultâneas sem como saber qual quebrou o relatório quando algo quebrasse.</li></ul>
+<ul><li><strong>Automação de navegador para o que não tem API.</strong> Duas origens só existem como portal web com login e autenticação multifator. Em vez de deixá-las fora, entraram por navegador headless, com o segundo fator resolvido pela leitura programática da caixa de e-mail. Alternativa descartada: exportação manual periódica, que é o problema que o projeto existe para eliminar.</li></ul>
+<ul><li><strong>Modo de execução seca antes de qualquer carga nova.</strong> Pipeline novo entra sem alterar base nem marcador de progresso, publicando o resultado como artefato para conferência. Só vai a produção por disparo manual explícito. Alternativa descartada: subir direto e corrigir depois — barato até a primeira corrupção de base histórica.</li></ul>
+<ul><li><strong>Catálogo único de sistemas, com efeito colateral proposital.</strong> Todo pipeline precisa estar registrado num catálogo central; o que não estiver é removido do log de atualização. A consequência é dura de propósito: pipeline esquecido some do painel de acompanhamento em vez de aparecer como dado velho fingindo estar fresco.</li></ul>
+<ul><li><strong>Dependências travadas em versão exata, com verificação de ambiente.</strong> Um script compara o que está instalado com o que o CI usa, sem instalar nada. A motivação foi concreta: uma diferença de versão maior numa biblioteca de manipulação de dados faz o pipeline rodar com semântica diferente da produção <strong>sem quebrar</strong> — o pior tipo de defeito, porque não avisa.</li></ul>
+<ul><li><strong>Regressão linear ponderada para estimar quilometragem por veículo.</strong> O odômetro chega por duas origens independentes, com leituras faltantes e outliers grosseiros. Em vez de interpolar, ajusta-se uma reta ponderada por veículo, com filtro de outliers e coeficiente de determinação ponderado como medida de confiança. Alternativa descartada: usar a última leitura válida, que propaga o erro de uma digitação errada por semanas.</li></ul><h4>Resultado</h4><ul><li><strong>22 conjuntos de dados</strong> de <strong>7 origens externas</strong> consolidados por <strong>9 pipelines de produção</strong>, com ciclo completo <strong>a cada duas horas, das 7h às 18h</strong> — extração, carga e atualização do conjunto de dados encadeadas sem intervenção manual. Fonte: catálogo de sistemas e workflows do repositório, contagem em 2026-08-23.</li><li><strong>88 módulos Python</strong> e <strong>29 arquivos de teste</strong> executados em integração contínua a cada alteração, com gate de cobertura mínima, análise estática e auditoria de vulnerabilidade de dependências. Fonte: mesma contagem.</li><li><strong>542 commits</strong> entre 2026-03-06 e 2026-08-23. Fonte: histórico do git.</li><li><strong>Um dia de trabalho de analista por ciclo de análise, eliminado.</strong> Era o custo fixo de preparar o dado antes de analisar; hoje é zero. Fonte: <code>met-003</code>, relato do processo anterior, confiança média.</li><li>O ganho de tempo de execução atribuído ao processamento assíncrono <strong>não tem fonte</strong> e ficou fora deste documento: a apuração de 2026-08-23 no histórico de execução não encontrou período anterior para comparar. Ver <code>met-001</code>.</li></ul></article>
+
+<h2>Competências com evidência</h2>
+<p class="grupo"><b>Linguagens:</b> Python, SQL, DAX, JavaScript.</p><p class="grupo"><b>Armazenamento e modelagem:</b> Modelagem dimensional (Star Schema).</p><p class="grupo"><b>Orquestração e pipelines:</b> ETL (Extract, Transform, Load), Power Automate, GitHub Actions, Processamento assíncrono (asyncio), Web scraping, Playwright, APIs REST.</p><p class="grupo"><b>Visualização e BI:</b> Power BI, Power Query, Google Sheets, Visualização de dados, Looker Studio.</p><p class="grupo"><b>Nuvem e infraestrutura:</b> Google Drive API.</p><p class="grupo"><b>Estatística e machine learning:</b> Machine Learning, Estatística aplicada.</p><p class="grupo"><b>Práticas de engenharia:</b> Git, CI/CD (Continuous Integration / Continuous Delivery), Qualidade de dados, Governança de dados, Testes automatizados.</p><p class="grupo"><b>Domínio de negócio:</b> Logística, Gestão de frota, Indústria alimentícia.</p>
+
+<h2>Formação e credenciais</h2>
+<ul><li><strong>Análise e Desenvolvimento de Sistemas</strong> — UNINASSAU, 2025-02</li><li><strong>Profissão: Cientista de Dados</strong> — EBAC — Escola Britânica de Artes Criativas e Tecnologia, 2025-12</li><li><strong>Inglês — trilha completa até Teens Higher 2 e Focus Final</strong> — Fisk Centro de Ensino — Pimenta Bueno/RO, 2015-06</li><li><a href="https://freecodecamp.org/certification/walkerz33/responsive-web-design">Responsive Web Design</a> — freeCodeCamp</li><li><a href="https://freecodecamp.org/certification/walkerz33/javascript-algorithms-and-data-structures">JavaScript Algorithms and Data Structures</a> — freeCodeCamp</li></ul>
+
+<footer>
+  Gerado de uma base versionada por <code>scripts/gerar_portfolio.py</code>.
+  Os casos são de projeto corporativo e estão sanitizados: descrevem problema,
+  arquitetura, decisão e resultado, sem código, sem dado e sem nome de sistema.
+  Todo número tem fonte reproduzível no repositório de origem.
+</footer>
+</div>
+</body>
+</html>
