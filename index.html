@@ -51,6 +51,12 @@ text-decoration-thickness:1px}
 a:visited{color:var(--acento)}
 a:hover{text-decoration-thickness:2px}
 .env{max-width:820px;margin:0 auto;padding:0 24px}
+/* RESIDUAL CONHECIDO, medido em 2026-08-26: com o texto do navegador em 200%
+   (`html{font-size:32px}`) a 390px de largura, `.env` fica 13px mais largo que
+   a janela. A 100% não há estouro em nenhuma das 15 larguras testadas, de 320
+   a 1920. NÃO usei `overflow-x:clip` aqui de propósito: os painéis escapam da
+   coluna por margem negativa, e clipar cortaria justamente eles. Fica
+   registrado em vez de mascarado. */
 
 /* ── Barra fixa ────────────────────────────────────────────────────────────
    A página tem 6 telas. Sem barra, voltar ao topo exige rolar tudo de novo e
@@ -90,8 +96,29 @@ transition:background .15s,color .15s}
 .par-idioma a[aria-current]{background:var(--acento);color:var(--bg)}
 .par-idioma a:not([aria-current]):hover{background:var(--acento-fraco);
 color:var(--acento)}
-@media(max-width:660px){.marca{font-size:1rem}
-.barra nav a{padding:6px 8px;font-size:.79rem}}
+/* `EN` é <span>, não <a>: a página em inglês ainda não existe, e um link para
+   `en/` daria 404 do GitHub Pages justamente para o público internacional —
+   que é quem clica em EN primeiro. Sinaliza a intenção sem prometer. */
+.par-idioma .em-breve{font-size:.75rem;padding:0 9px;color:var(--suave);
+font-weight:700;letter-spacing:.04em;display:flex;align-items:center;gap:5px;
+min-height:34px;cursor:default}
+/* `opacity:.45` dava 2,0:1 — abaixo do mínimo de 3:1. A isenção da WCAG vale
+   para CONTROLE desabilitado, e isto não é controle, é informação. E `title`
+   não aparece em toque: justamente o recrutador internacional, no aparelho em
+   que ele mais abre o link, via um "EN" fantasma sem explicação nenhuma. */
+.par-idioma .breve-rot{font-size:.62rem;font-weight:600;letter-spacing:.02em;
+text-transform:lowercase;opacity:.75}
+@media(max-width:420px){.par-idioma .breve-rot{display:none}}
+/* Abaixo de 620px a barra quebrava em TRÊS linhas: 126px de altura, 15,8%
+   de uma tela de 844px, permanentemente — e o `scroll-padding-top` fixo em
+   78px fazia toda âncora errar por 48px, escondendo o próprio título que o
+   leitor foi buscar. Uma linha só: marca à esquerda, ferramentas à direita,
+   o menu de seções some. Quem está no celular rola; não navega por menu. */
+@media(max-width:620px){
+.barra nav{display:none}
+.marca{font-size:1rem}
+.barra-in{padding:8px 20px;flex-wrap:nowrap}
+}
 
 /* ── Abertura ──────────────────────────────────────────────────────────────
    Serifada no nome e uma linha de VOZ antes do resumo técnico. A página
@@ -109,8 +136,12 @@ color:var(--fg);max-width:34ch;margin:0 0 26px;font-weight:400;text-wrap:pretty}
 .disp .ponto{display:inline-block;width:7px;height:7px;border-radius:50%;
 background:#3fa46a;margin-right:8px;vertical-align:1px}
 .links{margin:20px 0 0}
+/* `white-space:nowrap` protegia o rótulo de quebrar no meio — mas o e-mail
+   tem 25 caracteres, e sob zoom de texto a 200% ele estourava a janela em
+   32px. `max-width:100%` com quebra por caractere só onde é preciso. */
 .links a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--linha);
-margin-right:18px;font-size:.95rem;white-space:nowrap;padding-bottom:2px}
+margin-right:18px;font-size:.95rem;padding-bottom:2px;display:inline-block;
+max-width:100%;overflow-wrap:anywhere}
 .links a:hover{border-color:var(--acento);color:var(--acento)}
 
 /* ── Números ─────────────────────────────────────────────────────────────── */
@@ -142,6 +173,26 @@ article>h3:first-child{margin-top:0;font-size:1.3rem;line-height:1.3}
 .stack{font-size:.78rem;color:var(--suave);margin:0 0 14px;letter-spacing:.02em}
 .chamada{font-size:1rem;margin:0 0 16px;padding-left:15px;
 border-left:2px solid var(--acento)}
+/* ── Peso editorial ────────────────────────────────────────────────────────
+   Oito cartões de estrutura idêntica em fila era o "robotizado" de verdade —
+   e ele vive ABAIXO da dobra, não no cabeçalho. "Previsão de qualidade de
+   vinho tinto" não pode pesar o mesmo que a plataforma em produção.
+   Os de formação perdem o cartão: viram itens de lista, mais compactos, sem
+   fundo e sem borda. O conteúdo é o mesmo; o peso visual não.              */
+article.leve{background:transparent;border:none;border-radius:0;padding:0 0 18px;
+margin-bottom:0;border-bottom:1px solid var(--linha)}
+article.leve:hover{border-color:var(--linha)}
+article.leve>h3:first-child{font-size:1.02rem;margin-bottom:6px}
+article.leve .chamada{font-size:.92rem;color:var(--suave);border-left-color:var(--linha);
+padding-left:13px;margin-bottom:10px}
+article.leve .stack{margin-bottom:8px}
+article.leve summary{font-size:.8rem}
+@media(min-width:760px){
+  /* os de formação em duas colunas: cinco itens de curso em coluna única
+     ocupavam mais tela que os três casos de produção somados */
+  .formacao-grade{display:grid;grid-template-columns:1fr 1fr;gap:0 30px}
+  .formacao-grade article.leve{padding-top:2px}
+}
 
 /* ── Dobra ───────────────────────────────────────────────────────────────── */
 details{margin-top:2px}
@@ -211,6 +262,22 @@ border:1px solid var(--linha);border-radius:12px;background:var(--caixa);
 text-decoration:none;color:var(--fg);
 transition:border-color .15s,background .15s}
 .contato a:hover{border-color:var(--acento);background:var(--acento-fraco)}
+/* `min-width:0` para o item flex poder encolher abaixo do próprio min-content:
+   sem isso o `word-break` do valor não age e a caixa estoura 32px sob zoom de
+   texto a 200%. */
+.contato a>span:last-child{min-width:0}
+.ferramentas{min-width:0}
+/* Informação, não ação. A versão anterior mantinha borda, raio e chip de
+   ícone iguais aos três links ao lado: a única diferença computada era o
+   fundo, 3 unidades de RGB — e `cursor:auto` NÃO EXISTE em toque. No celular
+   o leitor tocava o cartão, nada acontecia, e ele não tinha como saber por
+   quê. Agora não parece caixa clicável porque não é caixa. */
+.contato .cartao-info{display:block;padding:4px 2px;color:var(--suave);
+font-size:.88rem;grid-column:1/-1}
+.contato .cartao-info .rot{display:inline;text-transform:none;letter-spacing:0;
+font-size:.88rem;margin:0}
+.contato .cartao-info .rot::after{content:":  "}
+.contato .cartao-info .val{color:var(--fg);display:inline}
 .contato .ic{width:38px;height:38px;flex:none;display:grid;place-items:center;
 border-radius:10px;background:var(--acento-fraco);color:var(--acento);
 font-size:1.05rem}
@@ -235,15 +302,16 @@ scroll-behavior:auto!important}}
   <div class="barra-in">
     <a class="marca" href="#topo">Gabriel Walker</a>
     <nav aria-label="Seções">
-      <a href="#casos">Casos</a>
       <a href="#paineis">Painéis</a>
+      <a href="#casos">Casos</a>
       <a href="#competencias">Competências</a>
       <a href="#contato">Contato</a>
     </nav>
     <div class="ferramentas">
       <div class="par-idioma">
         <a href="./" aria-current="page" hreflang="pt-BR" lang="pt-BR">PT</a>
-        <a href="en/" hreflang="en" lang="en">EN</a>
+        <span class="em-breve" aria-disabled="true"><span lang="en">EN</span>
+              <span class="breve-rot">em breve</span></span>
       </div>
       <button class="btn-icone" id="tema" type="button"
               aria-label="Alternar entre tema claro e escuro"
@@ -256,7 +324,7 @@ scroll-behavior:auto!important}}
 <header>
   <h1>Gabriel Walker</h1>
   <p class="papel">Engenheiro de Dados Pleno · Analista de Dados Sênior</p>
-  <p class="voz">Eu resolvo o problema de <em>o dado chegar</em> — do sistema de origem até o painel que a operação usa, sozinho e em produção.</p>
+  <p class="voz">Eu resolvo o problema de <em>o dado chegar</em> — do sistema de origem até o painel que a operação usa, em produção, todo dia.</p>
   <p class="resumo">Responsável, sozinho, pela plataforma de dados de uma frota de cerca de 150 veículos em quatro filiais: 9 pipelines em Python que consolidam 22 conjuntos de dados de 7 origens externas e 16 projetos Power BI em produção, com 325 medidas em DAX. Tecnólogo em Análise e Desenvolvimento de Sistemas, com formação em ciência de dados pela EBAC e inglês avançado.</p>
   <p class="disp"><span class="ponto"></span>Disponível para trabalho remoto · fuso UTC-4 · português nativo, inglês avançado</p>
   <p class="disp"><a href="#casos">8 casos documentados — 3 corporativos, 1 público com o código aberto</a></p>
@@ -448,10 +516,10 @@ publicação nos espaços de trabalho
 <h4>O que a primeira execução em produção ensinou</h4>
 <p>Rodar a janela completa contra o servidor real revelou o que a documentação não diz: <strong>a ANP não publicou abril nem junho de 2026.</strong> Seis variantes de nome testadas, todas 404.</p>
 <p>Isso ia fazer o portão de lacuna abortar <strong>toda execução</strong>, sobre um buraco que ninguém pode consertar — o falso positivo que congela dado à toa. O portão passou a distinguir lacuna da origem, que é tolerada e registrada, de lacuna de download parcial, que continua abortando.</p>
-<p>O CI também achou três defeitos que a máquina local escondia, incluindo o mais irônico: o passo que existe para avisar quando o pipeline quebra era o único arquivo YAML inválido do repositório.</p></div></details></article><p class="divisor">Projetos de formação — exercícios do programa de ciência de dados, com dado público</p><article id="analise-de-avaliacoes-de-clientes-com-llm-sentimento-topico-"><h3>Análise de avaliações de clientes com LLM — sentimento, tópico, polarização e entidade numa só chamada</h3><p class="meta">Autor único — coleta, engenharia de prompt, laço de processamento e consolidação · projeto de formação · 2025-05</p><p class="stack">Python · Pandas · NumPy · IA generativa aplicada a dados · LLM por API</p><p class="chamada">Classificação de avaliações de clientes com LLM (Google Gemini) por API: engenharia de prompt com saída estruturada em dicionário Python, consolidando sentimento, tópico, polarização e entidade de quatro chamadas em uma só.</p><details><summary>Resultado e metodologia</summary><div class="miolo"><h4>Resultado</h4><p>O laço demonstrado processa uma amostra de 10 comentários, empilhando o resultado num DataFrame com as quatro dimensões por linha. É prova de conceito de curso, não sistema em produção: não há avaliação de acurácia contra rótulo humano, e o volume é de demonstração.</p></div></details></article><article id="classificacao-de-sobreviventes-do-titanic-engenharia-de-atri"><h3>Classificação de sobreviventes do Titanic — engenharia de atributos, SMOTE e XGBoost</h3><p class="meta">Autor único — engenharia de atributos, pipeline, busca de hiperparâmetros e submissão · projeto de formação</p><p class="stack">Python · Pandas · XGBoost · Machine Learning · scikit-learn</p><p class="chamada">Classificador XGBoost com SMOTE e 3 atributos derivados sobre 891 passageiros do Titanic: 82,8% de acurácia em validação cruzada de 5 folds contra 61,6% do baseline de classe majoritária.</p><details><summary>Resultado e metodologia</summary><div class="miolo"><h4>Resultado</h4><ul><li><strong>Acurácia de 82,8% em validação cruzada de 5 folds, contra 61,6% do baseline de classe majoritária</strong> — 738 acertos em 891 contra 549. Ganho de 21,2 pontos percentuais sobre não fazer nada.</li><li><strong>Matriz de confusão:</strong> 488 verdadeiros negativos, 61 falsos positivos, 92 falsos negativos, 250 verdadeiros positivos.</li><li><strong>Por classe:</strong> não sobreviveu — precisão 0,84, recall 0,89, F1 0,86 (549 casos); sobreviveu — precisão 0,80, recall 0,73, F1 0,77 (342 casos). O modelo erra mais para o lado de dar o passageiro como morto: perde 92 dos 342 sobreviventes.</li><li><strong>Melhor combinação da busca:</strong> <code>learning_rate</code> 0,05, <code>max_depth</code> 5, <code>n_estimators</code> 200, <code>subsample</code> 0,8, <code>colsample_bytree</code> 0,8, <code>min_child_weight</code> 5, com acurácia média de 83,4% nos 5 folds — apurada em <strong>1.620 treinos</strong> (324 combinações × 5 folds).</li><li><strong>418 previsões geradas</strong> no formato exigido pela competição (<code>submission.csv</code>).</li></ul></div></details></article><article id="deteccao-de-fraude-em-cartao-de-credito-xgboost-contra-svm-e"><h3>Detecção de fraude em cartão de crédito — XGBoost contra SVM em base desbalanceada</h3><p class="meta">Autor único — pré-processamento, treino dos dois modelos, avaliação e relatório · projeto de formação · 2025-12</p><p class="stack">Python · Pandas · NumPy · Matplotlib · Machine Learning</p><p class="chamada">Classificação de fraude em 283.726 transações com 0,17% de casos positivos: XGBoost com recall de 86,4% e AUC-ROC de 0,977 contra SVM com recall de 91,5% e 6.452 falsos positivos.</p><details><summary>Resultado e metodologia</summary><div class="miolo"><h4>Resultado</h4><p>Conjunto de teste: <strong>70.932 transações, 118 delas fraude (0,166%)</strong>.</p>
+<p>O CI também achou três defeitos que a máquina local escondia, incluindo o mais irônico: o passo que existe para avisar quando o pipeline quebra era o único arquivo YAML inválido do repositório.</p></div></details></article><p class="divisor">Projetos de formação — exercícios do programa de ciência de dados, com dado público</p><div class="formacao-grade"><article class="leve" id="analise-de-avaliacoes-de-clientes-com-llm-sentimento-topico-"><h3>Análise de avaliações de clientes com LLM — sentimento, tópico, polarização e entidade numa só chamada</h3><p class="meta">Autor único — coleta, engenharia de prompt, laço de processamento e consolidação · projeto de formação · 2025-05</p><p class="stack">Python · Pandas · NumPy · IA generativa aplicada a dados · LLM por API</p><p class="chamada">Classificação de avaliações de clientes com LLM (Google Gemini) por API: engenharia de prompt com saída estruturada em dicionário Python, consolidando sentimento, tópico, polarização e entidade de quatro chamadas em uma só.</p><details><summary>Resultado e metodologia</summary><div class="miolo"><h4>Resultado</h4><p>O laço demonstrado processa uma amostra de 10 comentários, empilhando o resultado num DataFrame com as quatro dimensões por linha. É prova de conceito de curso, não sistema em produção: não há avaliação de acurácia contra rótulo humano, e o volume é de demonstração.</p></div></details></article><article class="leve" id="classificacao-de-sobreviventes-do-titanic-engenharia-de-atri"><h3>Classificação de sobreviventes do Titanic — engenharia de atributos, SMOTE e XGBoost</h3><p class="meta">Autor único — engenharia de atributos, pipeline, busca de hiperparâmetros e submissão · projeto de formação</p><p class="stack">Python · Pandas · XGBoost · Machine Learning · scikit-learn</p><p class="chamada">Classificador XGBoost com SMOTE e 3 atributos derivados sobre 891 passageiros do Titanic: 82,8% de acurácia em validação cruzada de 5 folds contra 61,6% do baseline de classe majoritária.</p><details><summary>Resultado e metodologia</summary><div class="miolo"><h4>Resultado</h4><ul><li><strong>Acurácia de 82,8% em validação cruzada de 5 folds, contra 61,6% do baseline de classe majoritária</strong> — 738 acertos em 891 contra 549. Ganho de 21,2 pontos percentuais sobre não fazer nada.</li><li><strong>Matriz de confusão:</strong> 488 verdadeiros negativos, 61 falsos positivos, 92 falsos negativos, 250 verdadeiros positivos.</li><li><strong>Por classe:</strong> não sobreviveu — precisão 0,84, recall 0,89, F1 0,86 (549 casos); sobreviveu — precisão 0,80, recall 0,73, F1 0,77 (342 casos). O modelo erra mais para o lado de dar o passageiro como morto: perde 92 dos 342 sobreviventes.</li><li><strong>Melhor combinação da busca:</strong> <code>learning_rate</code> 0,05, <code>max_depth</code> 5, <code>n_estimators</code> 200, <code>subsample</code> 0,8, <code>colsample_bytree</code> 0,8, <code>min_child_weight</code> 5, com acurácia média de 83,4% nos 5 folds — apurada em <strong>1.620 treinos</strong> (324 combinações × 5 folds).</li><li><strong>418 previsões geradas</strong> no formato exigido pela competição (<code>submission.csv</code>).</li></ul></div></details></article><article class="leve" id="deteccao-de-fraude-em-cartao-de-credito-xgboost-contra-svm-e"><h3>Detecção de fraude em cartão de crédito — XGBoost contra SVM em base desbalanceada</h3><p class="meta">Autor único — pré-processamento, treino dos dois modelos, avaliação e relatório · projeto de formação · 2025-12</p><p class="stack">Python · Pandas · NumPy · Matplotlib · Machine Learning</p><p class="chamada">Classificação de fraude em 283.726 transações com 0,17% de casos positivos: XGBoost com recall de 86,4% e AUC-ROC de 0,977 contra SVM com recall de 91,5% e 6.452 falsos positivos.</p><details><summary>Resultado e metodologia</summary><div class="miolo"><h4>Resultado</h4><p>Conjunto de teste: <strong>70.932 transações, 118 delas fraude (0,166%)</strong>.</p>
 <ul><li><strong>XGBoost — recall de 86,4% (102 das 118 fraudes), precisão de 24,9%, F1 de 0,386.</strong> Matriz de confusão: 70.506 verdadeiros negativos, 308 falsos positivos, 16 falsos negativos, 102 verdadeiros positivos. Limiar 0,05.</li><li><strong>SVM otimizado — recall de 91,5% (108 das 118 fraudes), precisão de 1,6%, F1 de 0,032.</strong> Matriz de confusão: 64.362 verdadeiros negativos, 6.452 falsos positivos, 10 falsos negativos, 108 verdadeiros positivos.</li><li><strong>AUC-ROC do XGBoost: 0,977, contra 0,5 de um classificador aleatório.</strong> É a comparação que vale nesta base. O notebook registra em texto que os dois modelos ficaram acima de 0,96 e que o XGBoost ficou em 0,977; <strong>o valor exato do AUC do SVM só existe dentro do gráfico e não foi impresso</strong> — está entre 0,96 e 0,977, e não dá para citar número fechado.</li><li><strong>A acurácia dos dois modelos não deve ser citada.</strong> O XGBoost fez 99,54% e o SVM 90,89%, ambos <strong>abaixo</strong> dos 99,83% que o baseline de classe majoritária entrega sem aprender nada. É o exemplo didático de por que a métrica está errada, não de que os modelos estão ruins.</li><li><strong>Trade-off medido, não opinado:</strong> o SVM captura 6 fraudes a mais que o XGBoost e cobra por isso <strong>6.144 falsos positivos a mais</strong> — de 308 para 6.452, um fator de 21. Cada falso positivo é uma transação legítima bloqueada ou uma análise manual aberta.</li></ul>
-<p>A conclusão registrada no relatório que acompanha o notebook é usar XGBoost como modelo principal e o SVM como camada complementar em janela de risco elevado. É recomendação de exercício: nenhum dos dois foi posto para rodar contra dado real.</p></div></details></article><article id="previsao-de-qualidade-de-vinho-tinto-quando-reformular-o-pro"><h3>Previsão de qualidade de vinho tinto — quando reformular o problema vale mais que ajustar o modelo</h3><p class="meta">Autor único — análise exploratória, atributos derivados, modelagem e avaliação crítica · projeto de formação</p><p class="stack">Python · Pandas · Machine Learning · Estatística aplicada · Análise exploratória de dados</p><p class="chamada">Random Forest sobre 1.599 amostras de vinho tinto: 66,0% de acurácia em 6 classes contra 42,5% do baseline de classe majoritária, e apuração de que a busca de hiperparâmetros rendeu 0,25 ponto percentual.</p><details><summary>Resultado e metodologia</summary><div class="miolo"><h4>Resultado</h4><ul><li><strong>Versão 1, 6 classes — acurácia de 66,0%, contra 42,5% do baseline de classe majoritária.</strong> Ganho de 23,5 pontos percentuais. As classes 5 e 6 sustentam o número: F1 de 0,74 e 0,66. As classes 3 e 4 saíram com precisão e recall <strong>zero</strong> — o modelo nunca as prevê; a classe 8 acertou 1 das 5 amostras do teste (precisão 0,50, recall 0,20, F1 0,29). F1 macro de 0,36 contra F1 ponderado de 0,64: a distância entre os dois é a medida do desequilíbrio.</li><li><strong>Busca de hiperparâmetros — acurácia de 66,25%, ganho de 0,25 ponto percentual</strong> sobre os 66,0% do modelo padrão, depois de 50 combinações sorteadas de uma grade de 1.800 e validação cruzada de 3 folds. As classes raras não se mexeram: 3 e 4 seguiram em zero e a classe 8 seguiu com o mesmo único acerto. É o resultado mais útil do trabalho: mede que o problema não estava nos hiperparâmetros.</li><li><strong>Versão 2, 3 classes — acurácia de 87,5%, contra 82,5% do baseline de classe majoritária.</strong> O salto de 66% para 87,5% parece grande e não é: mudou o problema. Contra o baseline correto, o ganho é de <strong>5 pontos percentuais</strong>, 4,7 vezes menor que os 23,5 da versão de 6 classes. Comparar 87,5% com 66,0% seria comparar prova de 6 alternativas com prova de 3.</li><li><strong>A classe &quot;ruim&quot; continuou invisível.</strong> Das 16 amostras ruins do teste, <strong>nenhuma foi prevista</strong> — todas classificadas como médias. F1 macro de 0,53. O reagrupamento escondeu o desbalanceamento; não resolveu.</li></ul>
-<p>O desfecho que se sustenta vale mais que a métrica: o ganho veio de reformular o alvo e de aceitar que, com 10 e 18 amostras, não há hiperparâmetro que ensine as classes extremas. O fechamento do notebook credita parte do ganho às variáveis derivadas, e essa metade não se sustenta no código — ver abaixo.</p></div></details></article>
+<p>A conclusão registrada no relatório que acompanha o notebook é usar XGBoost como modelo principal e o SVM como camada complementar em janela de risco elevado. É recomendação de exercício: nenhum dos dois foi posto para rodar contra dado real.</p></div></details></article><article class="leve" id="previsao-de-qualidade-de-vinho-tinto-quando-reformular-o-pro"><h3>Previsão de qualidade de vinho tinto — quando reformular o problema vale mais que ajustar o modelo</h3><p class="meta">Autor único — análise exploratória, atributos derivados, modelagem e avaliação crítica · projeto de formação</p><p class="stack">Python · Pandas · Machine Learning · Estatística aplicada · Análise exploratória de dados</p><p class="chamada">Random Forest sobre 1.599 amostras de vinho tinto: 66,0% de acurácia em 6 classes contra 42,5% do baseline de classe majoritária, e apuração de que a busca de hiperparâmetros rendeu 0,25 ponto percentual.</p><details><summary>Resultado e metodologia</summary><div class="miolo"><h4>Resultado</h4><ul><li><strong>Versão 1, 6 classes — acurácia de 66,0%, contra 42,5% do baseline de classe majoritária.</strong> Ganho de 23,5 pontos percentuais. As classes 5 e 6 sustentam o número: F1 de 0,74 e 0,66. As classes 3 e 4 saíram com precisão e recall <strong>zero</strong> — o modelo nunca as prevê; a classe 8 acertou 1 das 5 amostras do teste (precisão 0,50, recall 0,20, F1 0,29). F1 macro de 0,36 contra F1 ponderado de 0,64: a distância entre os dois é a medida do desequilíbrio.</li><li><strong>Busca de hiperparâmetros — acurácia de 66,25%, ganho de 0,25 ponto percentual</strong> sobre os 66,0% do modelo padrão, depois de 50 combinações sorteadas de uma grade de 1.800 e validação cruzada de 3 folds. As classes raras não se mexeram: 3 e 4 seguiram em zero e a classe 8 seguiu com o mesmo único acerto. É o resultado mais útil do trabalho: mede que o problema não estava nos hiperparâmetros.</li><li><strong>Versão 2, 3 classes — acurácia de 87,5%, contra 82,5% do baseline de classe majoritária.</strong> O salto de 66% para 87,5% parece grande e não é: mudou o problema. Contra o baseline correto, o ganho é de <strong>5 pontos percentuais</strong>, 4,7 vezes menor que os 23,5 da versão de 6 classes. Comparar 87,5% com 66,0% seria comparar prova de 6 alternativas com prova de 3.</li><li><strong>A classe &quot;ruim&quot; continuou invisível.</strong> Das 16 amostras ruins do teste, <strong>nenhuma foi prevista</strong> — todas classificadas como médias. F1 macro de 0,53. O reagrupamento escondeu o desbalanceamento; não resolveu.</li></ul>
+<p>O desfecho que se sustenta vale mais que a métrica: o ganho veio de reformular o alvo e de aceitar que, com 10 e 18 amostras, não há hiperparâmetro que ensine as classes extremas. O fechamento do notebook credita parte do ganho às variáveis derivadas, e essa metade não se sustenta no código — ver abaixo.</p></div></details></article></div>
 
 <h2 id="competencias">Competências com evidência</h2>
 <p class="grupo"><b>Linguagens:</b> Python, SQL, DAX, JavaScript, Pandas, NumPy.</p><p class="grupo"><b>Armazenamento e modelagem:</b> PostgreSQL, Modelagem dimensional (Star Schema), Modelagem relacional.</p><p class="grupo"><b>Orquestração e pipelines:</b> ETL (Extract, Transform, Load), Power Automate, GitHub Actions, Processamento assíncrono (asyncio), Web scraping, Playwright, APIs REST.</p><p class="grupo"><b>Visualização e Business Intelligence (BI):</b> Power BI, Power Query, Google Sheets, Visualização de dados, Matplotlib, Seaborn, Looker Studio.</p><p class="grupo"><b>Nuvem e infraestrutura:</b> Google Drive API.</p><p class="grupo"><b>Estatística e machine learning:</b> IA generativa aplicada a dados, LLM por API, Engenharia de prompt, Processamento de linguagem natural (NLP), Machine Learning, Estatística aplicada, scikit-learn, XGBoost, Análise exploratória de dados (EDA).</p><p class="grupo"><b>Práticas de engenharia:</b> Git, CI/CD (Continuous Integration / Continuous Delivery), Qualidade de dados, Governança de dados, Testes automatizados.</p><p class="grupo"><b>Domínio de negócio:</b> Logística, Gestão de frota, Indústria alimentícia.</p>
@@ -460,14 +528,13 @@ publicação nos espaços de trabalho
 <ul><li><strong>Análise e Desenvolvimento de Sistemas</strong> — UNINASSAU, 2025-02</li><li><strong>Profissão: Cientista de Dados</strong> — EBAC — Escola Britânica de Artes Criativas e Tecnologia, 2025-12</li><li><strong>Inglês — trilha completa até Teens Higher 2 e Focus Final</strong> — Fisk Centro de Ensino — Pimenta Bueno/RO, 2015-06</li><li><a href="https://www.datacamp.com/certificate/DE0015257350668">Data Engineer</a> — DataCamp, 2026-08</li><li><a href="https://www.datacamp.com/certificate/DEA0011211917063">Associate Data Engineer</a> — DataCamp, 2026-08</li><li><a href="https://www.datacamp.com/certificate/DAA0019999555307">Associate Data Analyst</a> — DataCamp, 2026-08</li><li><a href="https://freecodecamp.org/certification/walkerz33/javascript-algorithms-and-data-structures">JavaScript Algorithms and Data Structures</a> — freeCodeCamp, 2023-07</li><li><a href="https://freecodecamp.org/certification/walkerz33/responsive-web-design">Responsive Web Design</a> — freeCodeCamp, 2023-06</li></ul>
 
 <h2 id="contato">Contato</h2>
+<p class="resumo" style="margin-bottom:22px">Respondo e-mail no mesmo dia útil.
+Para vaga, o caminho mais curto é mandar a descrição — eu devolvo dizendo
+onde cubro o requisito e onde não cubro, com link para o caso que sustenta.</p>
 <div class="contato">
-  <a href="mailto:gabrielwalker14@gmail.com">
+  <a href="mailto:gabrielwalker14@gmail.com?subject=Vaga%20—%20Gabriel%20Walker">
     <span class="ic" aria-hidden="true">✉</span>
-    <span><span class="rot">E-mail</span><span class="val">gabrielwalker14@gmail.com</span></span>
-  </a>
-  <a href="tel:+5569996005854">
-    <span class="ic" aria-hidden="true">☎</span>
-    <span><span class="rot">Telefone</span><span class="val">+55 (69) 99600-5854</span></span>
+    <span><span class="rot">E-mail — preferido</span><span class="val">gabrielwalker14@gmail.com</span></span>
   </a>
   <a href="https://www.linkedin.com/in/gbrwalker">
     <span class="ic" aria-hidden="true">in</span>
@@ -475,8 +542,11 @@ publicação nos espaços de trabalho
   </a>
   <a href="https://github.com/gbrwalker">
     <span class="ic" aria-hidden="true">&lt;/&gt;</span>
-    <span><span class="rot">GitHub</span><span class="val">/gbrwalker</span></span>
+    <span><span class="rot">GitHub — código aberto</span><span class="val">/gbrwalker</span></span>
   </a>
+  <span class="cartao-info">
+    <span><span class="rot">Onde e quando</span><span class="val">Pimenta Bueno – RO, UTC-4 · remoto, Brasil e exterior</span></span>
+  </span>
 </div>
 
 <footer>
@@ -514,28 +584,64 @@ publicação nos espaços de trabalho
     rotulo();
   });
 
-  // Marca a seção em que o leitor está. IntersectionObserver e não evento de
-  // rolagem: não dispara a cada pixel e não trava a rolagem em aparelho fraco.
+  // Marca a seção em que o leitor está.
+  //
+  // NÃO por interseção. A versão anterior usava IntersectionObserver com
+  // `rootMargin:'-78px 0px -70% 0px'`, o que deixava uma faixa de observação
+  // de 192px numa tela de 900: um <h2> de 20px só contava enquanto
+  // atravessava essa faixa. Medido em 24 posições da página, 20 delas (83%)
+  // não marcavam NADA, e `#contato`, sendo a última seção, nunca acendia —
+  // no fim da página o navegador não rola mais e o título nunca entra na
+  // faixa. Um marcador que passa 5/6 do tempo dizendo "em lugar nenhum" é
+  // pior que não ter marcador.
+  //
+  // A regra certa é de posição, não de visibilidade: vale a ÚLTIMA seção cujo
+  // topo já passou da base da barra. E o fim da página força a última.
   var alvos = [].slice.call(document.querySelectorAll('h2[id]'));
   var elos = {};
   [].forEach.call(document.querySelectorAll('.barra nav a'), function (a) {
     elos[a.getAttribute('href').slice(1)] = a;
   });
-  if ('IntersectionObserver' in window && alvos.length) {
-    var visiveis = new Set();
-    var obs = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (e) {
-        if (e.isIntersecting) visiveis.add(e.target.id); else visiveis.delete(e.target.id);
-      });
-      for (var k in elos) elos[k].classList.remove('ativo');
-      for (var i = 0; i < alvos.length; i++) {
-        if (visiveis.has(alvos[i].id) && elos[alvos[i].id]) {
-          elos[alvos[i].id].classList.add('ativo'); break;
-        }
-      }
-    }, { rootMargin: '-78px 0px -70% 0px' });
-    alvos.forEach(function (h) { obs.observe(h); });
+  function marcar() {
+    var barra = document.querySelector('.barra');
+    var base = (barra ? barra.getBoundingClientRect().height : 56) + 8;
+    var atual = null;
+    for (var i = 0; i < alvos.length; i++) {
+      if (alvos[i].getBoundingClientRect().top <= base) atual = alvos[i].id;
+    }
+    // A última seção nunca alcançava a regra de posição: `#contato` fica a
+    // 253px além do curso máximo de rolagem, então o topo dela jamais sobe
+    // até a base da barra. A cláusula anterior dependia de parar EXATAMENTE
+    // no batente (tolerância de 2px) — inércia de trackpad ou a barra de URL
+    // do celular mudando 1px de altura já derrubavam.
+    // A regra certa é de VISIBILIDADE para o último item: se ele entrou na
+    // janela, é onde o leitor está.
+    var ultimo = alvos[alvos.length - 1];
+    if (ultimo && elos[ultimo.id] &&
+        ultimo.getBoundingClientRect().top < window.innerHeight * 0.9) {
+      atual = ultimo.id;
+    }
+    for (var id in elos) elos[id].classList.toggle('ativo', id === atual);
   }
+  var agendado = false;
+  function agendar() {
+    if (agendado) return;
+    agendado = true;
+    requestAnimationFrame(function () { agendado = false; marcar(); });
+  }
+  addEventListener('scroll', agendar, { passive: true });
+  addEventListener('resize', agendar);
+  marcar();
+
+  // `scroll-padding-top` do CSS é fixo; a barra muda de altura conforme a
+  // largura. Sincronizar em JS impede que o título fique atrás dela.
+  function ajustarPadding() {
+    var barra = document.querySelector('.barra');
+    if (barra) document.documentElement.style.scrollPaddingTop =
+      (barra.getBoundingClientRect().height + 14) + 'px';
+  }
+  ajustarPadding();
+  addEventListener('resize', ajustarPadding);
 })();
 </script>
 </body>
