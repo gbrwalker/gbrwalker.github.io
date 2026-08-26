@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gabriel Walker — Data Engineer</title>
+<meta name="description" content="Sole owner of the data platform for a ~150-vehicle fleet across four branches: 9 Python pipelines consolidating 22 datasets from 7 external sources, and…">
+
+<!-- Open Graph. Sem estas tags, o LinkedIn recusa o link com "Insira um link
+     válido": o robô dele monta o cartão a partir daqui, e sem elas não tem o
+     que montar. Vale para WhatsApp, Slack e qualquer lugar onde o link seja
+     colado — a imagem é a captura do painel, que é o que faz alguém clicar. -->
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://gbrwalker.github.io/">
+<meta property="og:title" content="Gabriel Walker — Engenheiro de Dados Pleno · Analista de Dados Sênior">
+<meta property="og:description" content="Sole owner of the data platform for a ~150-vehicle fleet across four branches: 9 Python pipelines consolidating 22 datasets from 7 external sources, and…">
+<meta property="og:image" content="https://gbrwalker.github.io/paineis/indicadores-de-manutencao.png">
+<meta property="og:image:alt" content="Painel de indicadores de manutenção de frota">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="author" content="Gabriel Walker">
+<link rel="canonical" href="https://gbrwalker.github.io/en/">
+<link rel="alternate" hreflang="pt-BR" href="https://gbrwalker.github.io/">
+<link rel="alternate" hreflang="en" href="https://gbrwalker.github.io/en/">
+<link rel="alternate" hreflang="x-default" href="https://gbrwalker.github.io/">
+<style>
+/* ── Sistema ───────────────────────────────────────────────────────────────
+   Tema por ATRIBUTO, não só por `prefers-color-scheme`: o botão precisa
+   vencer a preferência do sistema, e um `@media` sozinho não permite isso.
+   `:root[data-tema]` manda; sem atributo, cai na preferência do aparelho.   */
+:root{
+  --bg:#fbfaf7; --fg:#1a1917; --suave:#5f5c55; --linha:#e4e0d8;
+  --caixa:#fff; --acento:#0f5d70; --acento-fraco:#e6f1f3; --codigo:#f4f2ed;
+  --realce:#b35f2e;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-tema="claro"]){
+  --bg:#12120f; --fg:#efece4; --suave:#a09b90; --linha:#2e2c27;
+  --caixa:#1a1a16; --acento:#7fc3d4; --acento-fraco:#16292e; --codigo:#232219;
+  --realce:#e2a06d;
+}}
+:root[data-tema="escuro"]{
+  --bg:#12120f; --fg:#efece4; --suave:#a09b90; --linha:#2e2c27;
+  --caixa:#1a1a16; --acento:#7fc3d4; --acento-fraco:#16292e; --codigo:#232219;
+  --realce:#e2a06d;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:78px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 var(--sans);
+-webkit-font-smoothing:antialiased}
+a{color:var(--acento);text-decoration:underline;text-underline-offset:2px;
+text-decoration-thickness:1px}
+a:visited{color:var(--acento)}
+a:hover{text-decoration-thickness:2px}
+.env{max-width:820px;margin:0 auto;padding:0 24px}
+/* RESIDUAL CONHECIDO, medido em 2026-08-26: com o texto do navegador em 200%
+   (`html{font-size:32px}`) a 390px de largura, `.env` fica 13px mais largo que
+   a janela. A 100% não há estouro em nenhuma das 15 larguras testadas, de 320
+   a 1920. NÃO usei `overflow-x:clip` aqui de propósito: os painéis escapam da
+   coluna por margem negativa, e clipar cortaria justamente eles. Fica
+   registrado em vez de mascarado. */
+
+/* ── Barra fixa ────────────────────────────────────────────────────────────
+   A página tem 6 telas. Sem barra, voltar ao topo exige rolar tudo de novo e
+   o leitor não sabe o que existe abaixo dele.                               */
+.barra{position:sticky;top:0;z-index:50;
+background:color-mix(in srgb,var(--bg) 86%,transparent);
+backdrop-filter:saturate(180%) blur(12px);
+-webkit-backdrop-filter:saturate(180%) blur(12px);
+border-bottom:1px solid var(--linha)}
+/* Largura da COLUNA DE LEITURA, não da faixa larga dos painéis: a marca da
+   barra precisa nascer na mesma coluna do h1. Com 1140px havia 164px de
+   desalinhamento entre o nome na barra e o nome no cabeçalho. */
+.barra-in{max-width:820px;margin:0 auto;padding:9px 24px;display:flex;
+align-items:center;gap:6px;flex-wrap:wrap}
+.marca{font-family:var(--serif);font-size:1.12rem;margin-right:auto;
+text-decoration:none;color:var(--fg);white-space:nowrap}
+.barra nav{display:flex;gap:2px;flex-wrap:wrap}
+.barra nav a{font-size:.85rem;color:var(--suave);text-decoration:none;
+padding:7px 11px;border-radius:7px;white-space:nowrap;
+transition:background .15s,color .15s}
+.barra nav a:hover{background:var(--acento-fraco);color:var(--acento)}
+.barra nav a.ativo{color:var(--acento);background:var(--acento-fraco);font-weight:600}
+.ferramentas{display:flex;gap:6px;align-items:center;margin-left:6px}
+.btn-icone{width:34px;height:34px;display:grid;place-items:center;cursor:pointer;
+background:transparent;border:1px solid var(--linha);border-radius:8px;
+color:var(--suave);font-size:.95rem;line-height:1;padding:0;
+transition:border-color .15s,color .15s,background .15s}
+.btn-icone:hover{border-color:var(--acento);color:var(--acento);
+background:var(--acento-fraco)}
+.btn-icone:focus-visible{outline:2px solid var(--acento);outline-offset:2px}
+.par-idioma{display:flex;border:1px solid var(--linha);border-radius:8px;
+overflow:hidden}
+.par-idioma a{font-size:.75rem;padding:0 10px;color:var(--suave);
+text-decoration:none;font-weight:700;letter-spacing:.04em;
+display:grid;place-items:center;min-height:34px;
+transition:background .15s,color .15s}
+.par-idioma a[aria-current]{background:var(--acento);color:var(--bg)}
+.par-idioma a:not([aria-current]):hover{background:var(--acento-fraco);
+color:var(--acento)}
+/* `EN` é <span>, não <a>: a página em inglês ainda não existe, e um link para
+   `en/` daria 404 do GitHub Pages justamente para o público internacional —
+   que é quem clica em EN primeiro. Sinaliza a intenção sem prometer. */
+.par-idioma .em-breve{font-size:.75rem;padding:0 9px;color:var(--suave);
+font-weight:700;letter-spacing:.04em;display:flex;align-items:center;gap:5px;
+min-height:34px;cursor:default}
+/* `opacity:.45` dava 2,0:1 — abaixo do mínimo de 3:1. A isenção da WCAG vale
+   para CONTROLE desabilitado, e isto não é controle, é informação. E `title`
+   não aparece em toque: justamente o recrutador internacional, no aparelho em
+   que ele mais abre o link, via um "EN" fantasma sem explicação nenhuma. */
+.par-idioma .breve-rot{font-size:.62rem;font-weight:600;letter-spacing:.02em;
+text-transform:lowercase;opacity:.75}
+@media(max-width:420px){.par-idioma .breve-rot{display:none}}
+/* Abaixo de 620px a barra quebrava em TRÊS linhas: 126px de altura, 15,8%
+   de uma tela de 844px, permanentemente — e o `scroll-padding-top` fixo em
+   78px fazia toda âncora errar por 48px, escondendo o próprio título que o
+   leitor foi buscar. Uma linha só: marca à esquerda, ferramentas à direita,
+   o menu de seções some. Quem está no celular rola; não navega por menu. */
+@media(max-width:620px){
+.barra nav{display:none}
+.marca{font-size:1rem}
+.barra-in{padding:8px 20px;flex-wrap:nowrap}
+}
+
+/* ── Abertura ──────────────────────────────────────────────────────────────
+   Serifada no nome e uma linha de VOZ antes do resumo técnico. A página
+   inteira numa sans de peso único lia como relatório gerado, não como
+   alguém — que era a queixa de "robotizado".                                */
+header{padding:58px 0 8px}
+h1{font-family:var(--serif);font-size:3.3rem;font-weight:400;line-height:1.05;
+margin:0 0 10px;letter-spacing:-.01em}
+.papel{font-size:1.02rem;color:var(--acento);font-weight:600;margin:0 0 24px}
+.voz{font-family:var(--serif);font-size:1.55rem;line-height:1.38;
+color:var(--fg);max-width:34ch;margin:0 0 26px;font-weight:400;text-wrap:pretty}
+.voz em{font-style:italic;color:var(--realce)}
+.resumo{font-size:1.02rem;color:var(--fg);max-width:62ch;margin:0 0 16px}
+.disp{font-size:.9rem;color:var(--suave);margin:0 0 8px}
+.disp .ponto{display:inline-block;width:7px;height:7px;border-radius:50%;
+background:#3fa46a;margin-right:8px;vertical-align:1px}
+.links{margin:20px 0 0}
+/* `white-space:nowrap` protegia o rótulo de quebrar no meio — mas o e-mail
+   tem 25 caracteres, e sob zoom de texto a 200% ele estourava a janela em
+   32px. `max-width:100%` com quebra por caractere só onde é preciso. */
+.links a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--linha);
+margin-right:18px;font-size:.95rem;padding-bottom:2px;display:inline-block;
+max-width:100%;overflow-wrap:anywhere}
+.links a:hover{border-color:var(--acento);color:var(--acento)}
+
+/* ── Números ─────────────────────────────────────────────────────────────── */
+.numeros{display:grid;grid-template-columns:repeat(2,1fr);background:var(--caixa);
+border:1px solid var(--linha);border-radius:12px;overflow:hidden;margin:34px 0}
+@media(min-width:700px){.numeros{grid-template-columns:repeat(4,1fr)}}
+.numeros div{padding:18px;border-right:1px solid var(--linha);
+border-bottom:1px solid var(--linha)}
+.numeros b{display:block;font-family:var(--serif);font-size:2.1rem;
+font-weight:400;letter-spacing:-.01em;line-height:1.05}
+.numeros span{font-size:.8rem;color:var(--suave)}
+
+/* ── Seções ──────────────────────────────────────────────────────────────── */
+h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;
+color:var(--suave);font-weight:700;margin:64px 0 20px;padding-bottom:9px;
+border-bottom:1px solid var(--linha)}
+h3{font-size:1.05rem;margin:32px 0 10px}
+h4{font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;
+color:var(--fg);font-weight:700;margin:26px 0 10px}
+.divisor{font-size:.85rem;color:var(--suave);margin:46px 0 18px;
+padding-bottom:9px;border-bottom:1px solid var(--linha)}
+
+/* ── Cartão de caso ──────────────────────────────────────────────────────── */
+article{border:1px solid var(--linha);border-radius:12px;padding:26px 28px;
+margin-bottom:18px;background:var(--caixa);transition:border-color .15s}
+article:hover{border-color:color-mix(in srgb,var(--acento) 40%,var(--linha))}
+article>h3:first-child{margin-top:0;font-size:1.3rem;line-height:1.3}
+.meta{font-size:.82rem;color:var(--suave);margin:0 0 10px}
+.stack{font-size:.78rem;color:var(--suave);margin:0 0 14px;letter-spacing:.02em}
+.chamada{font-size:1rem;margin:0 0 16px;padding-left:15px;
+border-left:2px solid var(--acento)}
+/* ── Peso editorial ────────────────────────────────────────────────────────
+   Oito cartões de estrutura idêntica em fila era o "robotizado" de verdade —
+   e ele vive ABAIXO da dobra, não no cabeçalho. "Previsão de qualidade de
+   vinho tinto" não pode pesar o mesmo que a plataforma em produção.
+   Os de formação perdem o cartão: viram itens de lista, mais compactos, sem
+   fundo e sem borda. O conteúdo é o mesmo; o peso visual não.              */
+article.leve{background:transparent;border:none;border-radius:0;padding:0 0 18px;
+margin-bottom:0;border-bottom:1px solid var(--linha)}
+article.leve:hover{border-color:var(--linha)}
+article.leve>h3:first-child{font-size:1.02rem;margin-bottom:6px}
+article.leve .chamada{font-size:.92rem;color:var(--suave);border-left-color:var(--linha);
+padding-left:13px;margin-bottom:10px}
+article.leve .stack{margin-bottom:8px}
+article.leve summary{font-size:.8rem}
+@media(min-width:760px){
+  /* os de formação em duas colunas: cinco itens de curso em coluna única
+     ocupavam mais tela que os três casos de produção somados */
+  .formacao-grade{display:grid;grid-template-columns:1fr 1fr;gap:0 30px}
+  .formacao-grade article.leve{padding-top:2px}
+}
+
+/* ── Dobra ───────────────────────────────────────────────────────────────── */
+details{margin-top:2px}
+summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;
+gap:8px;font-size:.85rem;color:var(--acento);font-weight:600;padding:6px 0;
+user-select:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"";width:0;height:0;border:5px solid transparent;
+border-left-color:currentColor;transition:transform .15s ease;
+transform-origin:25% 50%}
+details[open]>summary::before{transform:rotate(90deg)}
+summary:hover{text-decoration:underline}
+summary:focus-visible{outline:2px solid var(--acento);outline-offset:3px;
+border-radius:3px}
+.miolo{padding-top:6px;border-top:1px solid var(--linha);margin-top:10px}
+.miolo>h4:first-child{margin-top:14px}
+.miolo>*{max-width:70ch}
+.miolo pre,.miolo>.rolavel{max-width:none}
+
+/* ── Código ──────────────────────────────────────────────────────────────── */
+pre{background:var(--codigo);padding:16px;border-radius:8px;overflow-x:auto;
+font-size:.8rem;line-height:1.5;margin:14px 0;scrollbar-width:thin;
+scrollbar-color:var(--suave) transparent}
+code{background:var(--codigo);padding:1px 5px;border-radius:4px;font-size:.88em}
+/* Rolagem visível, caso um diagrama largo volte. Hoje nenhum chega aqui:
+   todos foram reescritos para no máximo 37 colunas — consertar a origem era
+   a resposta certa, não sinalizar o defeito. */
+.rolavel{position:relative;overflow:hidden;border-radius:8px}
+.rolavel::after{content:"";position:absolute;inset:0 0 0 auto;width:22px;
+pointer-events:none;background:linear-gradient(to left,rgba(0,0,0,.16),transparent)}
+.dica{font-size:.7rem;color:var(--suave);margin:0 0 4px}
+@media(max-width:560px){pre{font-size:.62rem;line-height:1.5}}
+@media(min-width:561px){.rolavel::after,.dica{display:none}}
+ul{padding-left:20px}li{margin-bottom:8px}
+.grupo{margin-bottom:14px;font-size:.95rem}
+.grupo b{color:var(--suave);font-weight:600}
+
+/* ── Painéis ───────────────────────────────────────────────────────────────
+   A IMAGEM escapa da medida de leitura; a prosa não. A 820px a captura de
+   3200px saía a 24% de escala, com os rótulos do painel virando 5px.        */
+@media(min-width:900px){.demos,h2.largo{width:min(1140px,100vw - 48px);
+margin-left:calc(50% - min(570px,50vw - 24px))}}
+.demos{display:grid;gap:18px}
+@media(min-width:900px){.demos{grid-template-columns:1fr 1fr}}
+.demo{border:1px solid var(--linha);border-radius:12px;overflow:hidden;
+background:var(--caixa);transition:border-color .15s;display:flex;
+flex-direction:column}
+.demo:hover{border-color:color-mix(in srgb,var(--acento) 40%,var(--linha))}
+.demo>a{display:block;line-height:0}
+.demo img{width:100%;height:auto;display:block}
+.demo .leg{padding:16px 18px;font-size:.86rem;color:var(--suave);
+line-height:1.55;max-width:78ch;display:flex;flex-direction:column;flex:1}
+.demo .leg b{color:var(--fg);display:block;margin-bottom:5px;font-size:.97rem}
+.demo .leg .abrir{display:block;width:fit-content;line-height:1.4;
+margin-top:auto;padding:9px 16px;border-radius:8px;background:var(--acento);
+color:var(--bg);text-decoration:none;font-size:.85rem;font-weight:600;
+transition:opacity .15s}
+.demo .leg .abrir:hover{opacity:.85}
+@media(max-width:560px){.demo img{max-height:132px;object-fit:cover;
+object-position:top center}}
+
+/* ── Contato ─────────────────────────────────────────────────────────────── */
+.contato{display:grid;gap:12px;grid-template-columns:1fr;margin:0}
+@media(min-width:640px){.contato{grid-template-columns:repeat(2,1fr)}}
+.contato a{display:flex;gap:13px;align-items:center;padding:16px 18px;
+border:1px solid var(--linha);border-radius:12px;background:var(--caixa);
+text-decoration:none;color:var(--fg);
+transition:border-color .15s,background .15s}
+.contato a:hover{border-color:var(--acento);background:var(--acento-fraco)}
+/* `min-width:0` para o item flex poder encolher abaixo do próprio min-content:
+   sem isso o `word-break` do valor não age e a caixa estoura 32px sob zoom de
+   texto a 200%. */
+.contato a>span:last-child{min-width:0}
+.ferramentas{min-width:0}
+/* Informação, não ação. A versão anterior mantinha borda, raio e chip de
+   ícone iguais aos três links ao lado: a única diferença computada era o
+   fundo, 3 unidades de RGB — e `cursor:auto` NÃO EXISTE em toque. No celular
+   o leitor tocava o cartão, nada acontecia, e ele não tinha como saber por
+   quê. Agora não parece caixa clicável porque não é caixa. */
+.contato .cartao-info{display:block;padding:4px 2px;color:var(--suave);
+font-size:.88rem;grid-column:1/-1}
+.contato .cartao-info .rot{display:inline;text-transform:none;letter-spacing:0;
+font-size:.88rem;margin:0}
+.contato .cartao-info .rot::after{content:":  "}
+.contato .cartao-info .val{color:var(--fg);display:inline}
+.contato .ic{width:38px;height:38px;flex:none;display:grid;place-items:center;
+border-radius:10px;background:var(--acento-fraco);color:var(--acento);
+font-size:1.05rem}
+.contato .rot{display:block;font-size:.72rem;color:var(--suave);
+text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+.contato .val{font-size:.94rem;word-break:break-word}
+
+footer{margin:76px 0 60px;padding-top:24px;border-top:1px solid var(--linha);
+font-size:.85rem;color:var(--suave)}
+@media(max-width:560px){header{padding:32px 0 8px}h1{font-size:2.35rem}
+.voz{font-size:1.22rem;max-width:none}article{padding:20px 18px}
+.numeros div{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;
+scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<!-- Barra fixa. `sticky` e não `fixed`: sticky não tira a barra do fluxo, então
+     não é preciso compensar a altura com padding no body — e o
+     `scroll-padding-top` do html impede que o alvo da âncora fique embaixo dela. -->
+<div class="barra">
+  <div class="barra-in">
+    <a class="marca" href="#topo">Gabriel Walker</a>
+    <nav aria-label="Sections">
+      <a href="#paineis">Dashboards</a>
+      <a href="#casos">Cases</a>
+      <a href="#competencias">Skills</a>
+      <a href="#contato">Contact</a>
+    </nav>
+    <div class="ferramentas">
+      <div class="par-idioma">
+<a href="../" hreflang="pt-BR" lang="pt-BR">PT</a><a href="./" aria-current="page" hreflang="en" lang="en">EN</a>
+      </div>
+      <button class="btn-icone" id="tema" type="button"
+              aria-label="Switch between light and dark theme"
+              title="Alternar tema">◐</button>
+    </div>
+  </div>
+</div>
+
+<div class="env" id="topo">
+<header>
+  <h1>Gabriel Walker</h1>
+  <p class="papel">Engenheiro de Dados Pleno · Analista de Dados Sênior</p>
+  <p class="voz">I solve the problem of <em>the data arriving</em> — from the source system to the dashboard operations run on, in production, every day.</p>
+  <p class="resumo">Sole owner of the data platform for a ~150-vehicle fleet across four branches: 9 Python pipelines consolidating 22 datasets from 7 external sources, and 16 production Power BI projects with 325 DAX measures. Technologist in Systems Analysis and Development, with data science training and advanced English.</p>
+  <p class="disp"><span class="ponto"></span>Available for remote work · UTC-4 · Portuguese native, English advanced</p>
+  <p class="disp"><a href="#casos">8 documented cases — 3 from production, 1 public with open source code</a></p>
+  <p class="links">
+    <a href="mailto:gabrielwalker14@gmail.com">gabrielwalker14@gmail.com</a>
+    <a href="https://www.linkedin.com/in/gbrwalker">LinkedIn</a>
+    <a href="https://github.com/gbrwalker">GitHub</a>
+    <span style="color:var(--suave);font-size:.95rem">Pimenta Bueno – RO</span>
+  </p>
+</header>
+
+<div class="numeros"><div><b>9</b><span>production pipelines</span></div><div><b>16</b><span>Power BI projects</span></div><div><b>29</b><span>test files</span></div><div><b>150</b><span>vehicles</span></div><div><b>20</b><span>users</span></div><div><b>325</b><span>DAX measures</span></div><div><b>22</b><span>datasets</span></div><div><b>7</b><span>external sources</span></div></div>
+
+<h2 class="largo" id="paineis">Live dashboards</h2>
+<div class="demos"><div class="demo">
+  <a href="../paineis/indicadores-de-manutencao.html">
+    <img src="../paineis/indicadores-de-manutencao.png" width="3200" height="1760"
+         loading="lazy" decoding="async" alt="Fleet maintenance dashboard, with filters, indicator cards, a monthly series and lists by component, unit and criticality">
+  </a>
+  <p class="leg"><b>Fleet maintenance indicators</b>
+    Real dashboard, synthetic data. Filters, search by plate or component and instant recalculation — click and use it. The dataset is generated by script from a fixed seed: 150 vehicles, 1,180 work orders, the same shape as the production data and none of it inside.
+    Self-contained page, no server and no external request.
+    <a class="abrir" href="../paineis/indicadores-de-manutencao.html">Open the dashboard</a>
+  </p>
+</div><div class="demo">
+  <a href="../paineis/farol-de-os.html">
+    <img src="../paineis/farol-de-os.png" width="3200" height="1760"
+         loading="lazy" decoding="async" alt="Work order tracking dashboard, with a status light, due date and owner">
+  </a>
+  <p class="leg"><b>Work order status board</b>
+    Real dashboard, synthetic data. Work order tracking by status and due date. Same visual standard and same synthetic dataset as the other dashboard — both come from the same generator, with the template read via <code>git show</code> from the working repository, never from disk.
+    Self-contained page, no server and no external request.
+    <a class="abrir" href="../paineis/farol-de-os.html">Open the dashboard</a>
+  </p>
+</div></div>
+
+<h2 id="casos">Case studies</h2>
+<article id="plataforma-de-dados-de-frota-ingestao-orquestracao-e-entrega"><h3>Fleet data platform — ingestion, orchestration and delivery</h3><p class="meta">Sole author and maintainer — architecture, implementation, operation · 2026-03 to present</p><p class="stack">Python · ETL · GitHub Actions · Power Automate · CI/CD</p><p class="chamada">Ingestion and orchestration of 22 datasets from 7 external sources through 9 Python pipelines, with 29 test files in continuous integration.</p><details><summary>Architecture, decisions and outcome</summary><div class="miolo"><h4>The problem</h4><p>Fleet operations at a distributor with four branches and around 150 vehicles depended on seven data sources that did not talk to each other: maintenance management, time-and-attendance, refuelling, safety checklists, distribution, and a corporate mailbox where preventive maintenance receipts arrived.</p>
+<p>None of those sources delivered analysis-ready data. Some had an API, some existed only as a web portal behind a login, and some existed only as an e-mail attachment. Consolidating meant someone logging into each system, exporting a report, cleaning it by hand and pasting it into a spreadsheet — work that repeated every analysis cycle and whose output was stale the next day.</p>
+<p>The cost is measured: <strong>one full analyst-day per analysis cycle</strong>, spent before the analysis began. Pull the report from each source, paste the raw data into the spreadsheet, clean it there, and only then look at the number. Today the data arrives dashboard-ready, refreshed up to six times a day, and the analysis starts the moment the file opens.</p><h4>Architecture</h4><pre>7 external sources
+  22 datasets
+  REST APIs · portals behind login
+  corporate mailbox
+    │
+    ▼
+9 Python pipelines
+  9 scheduled workflows
+  extraction, light transforms
+  deduplication and validation
+    │
+    ▼
+CI/CD orchestration
+  every 2h, 7am to 6pm
+  on-demand runs
+  e-mail failure alerts
+    │
+    ▼
+compressed file layer
+  stable contract: fixed encoding,
+  separator and compression
+    │
+    ▼
+refresh orchestration
+  triggers the dataset refresh
+  as soon as the load finishes
+    │
+    ▼
+semantic layer and reports
+  consumed by the BI platform
+</pre>
+<p>The repository is organised into one package per source, plus a shared package holding the storage client, the system catalogue and common utilities. Two of the 22 datasets are not external: they are derived, computed by crossing two others.</p><h4>Technical decisions</h4><ul><li><strong>Orchestrate with the repository&#x27;s own CI, not a dedicated orchestrator.</strong> The operation has 9 pipelines with simple scheduling and no complex dependencies between them. CI already provides scheduling, on-demand runs, run history, a secret vault and notifications — free, and with no server to maintain. Alternative rejected: a dedicated orchestrator, which would bring a dependency and reprocessing interface but charge a running server and a second piece of infrastructure to watch, on a team of one.</li></ul>
+<ul><li><strong>Replace the data warehouse with a compressed file layer.</strong> The first version wrote to a cloud data warehouse. It moved to compressed files read directly by the BI layer. Alternative rejected: keeping the warehouse — it solved ad-hoc SQL queries, but the volume did not justify the recurring cost, and the only consumer of the data was the BI platform, which reads a file as well as it reads a table.</li></ul>
+<ul><li><strong>Migrate in two phases, changing one variable at a time.</strong> The next migration — moving files off the cloud and writing to a local server, read through a gateway — was deliberately split in two: first change <em>where it runs and where it writes</em>, keeping the file format byte-for-byte identical; only then change the format. Alternative rejected: doing both at once, which was faster on paper — and would have left three simultaneous changes with no way to know which one broke the report when something broke.</li></ul>
+<ul><li><strong>Browser automation for what has no API.</strong> Two sources exist only as a web portal with a login and multi-factor authentication. Rather than leaving them out, they came in through a headless browser, with the second factor resolved by reading the mailbox programmatically. Alternative rejected: periodic manual export, which is the problem this project exists to eliminate.</li></ul>
+<ul><li><strong>A dry-run mode before any new load.</strong> A new pipeline goes in without touching the base or the progress marker, publishing its output as an artefact for review. It reaches production only by an explicit manual trigger. Alternative rejected: ship straight and fix later — cheap until the first corruption of historical data.</li></ul>
+<ul><li><strong>A single system catalogue, with a deliberate side effect.</strong> Every pipeline must be registered in a central catalogue; anything not registered is dropped from the refresh log. The consequence is harsh on purpose: a forgotten pipeline disappears from the monitoring dashboard instead of showing up as stale data pretending to be fresh.</li></ul>
+<ul><li><strong>Dependencies pinned to exact versions, with an environment check.</strong> A script compares what is installed against what CI uses, without installing anything. The motivation was concrete: a major version difference in a data manipulation library makes the pipeline run with different semantics from production <strong>without breaking</strong> — the worst kind of defect, because it does not announce itself.</li></ul>
+<ul><li><strong>Weighted linear regression to estimate per-vehicle mileage.</strong> The odometer arrives from two independent sources, with missing readings and gross outliers. Instead of interpolating, a weighted line is fitted per vehicle, with outlier filtering and a weighted coefficient of determination as the confidence measure. Alternative rejected: using the last valid reading, which propagates a single typo for weeks.</li></ul><h4>Outcome</h4><ul><li><strong>22 datasets</strong> from <strong>7 external sources</strong> consolidated by <strong>9 production pipelines</strong>, with a full cycle <strong>every two hours, 7am to 6pm</strong> — extraction, load and dataset refresh chained with no manual step. Source: system catalogue and repository workflows, counted on 2026-08-23.</li><li><strong>88 Python modules</strong> and <strong>29 test files</strong> running in continuous integration on every change, with a minimum coverage gate, static analysis and dependency vulnerability auditing. Source: same count.</li><li><strong>542 commits</strong> between 2026-03-06 and 2026-08-23. Source: git history.</li><li><strong>One analyst-day per analysis cycle, eliminated.</strong> It was the fixed cost of preparing data before analysing it; today it is zero. Source: an account of the prior process, medium confidence.</li><li>The execution-time gain attributed to asynchronous processing <strong>has no source</strong> and was left out of this document: the 2026-08-23 audit of the run history found no prior period to compare against.</li></ul></div></details><details><summary>Full case study</summary><div class="miolo"><h4>A fleet data platform run by one person</h4><h4>The problem</h4><p>A distributor with four branches operates around 150 vehicles. The information needed to manage that fleet existed — refuelling, maintenance, telemetry, checklists, driver hours — but lived in seven different external systems, each with its own idea of how to hand data over.</p>
+<p>The process for answering any question was this: log into each system, download the report, paste it into a spreadsheet, deduplicate by hand, and only then push it to the visualisation layer. <strong>One full analyst-day, per cycle, before anyone looked at the first number.</strong> By the time the answer was ready, the question had changed.</p>
+<p>The real problem was never a lack of data. It was that the cost of consolidating it made asking anything prohibitive — and so almost nothing was asked.</p><h4>The architecture</h4><p>Nine Python pipelines, orchestrated by the continuous integration platform&#x27;s scheduler, consolidating 22 datasets from 7 external sources. They run every two hours through the business day. There is no server: each run is born on an ephemeral runner, does the work, and dies.</p>
+<pre>7 external sources
+  ├─ REST APIs
+  ├─ portals with no API
+  ├─ corporate mailbox
+  └─ scheduled exports
+    │
+    ▼
+ingestion
+  retry · multi-factor authentication
+  retroactive window
+    │
+    ▼
+normalisation
+  schema contract
+  discards counted
+    │
+    ▼
+quality gate
+  compares with the previous snapshot
+  ABORTS if suspicious
+    │
+    ▼
+version-controlled cloud storage
+    │
+    ▼
+16 production visualisation projects
+  325 measures · 282 tables
+  98 report pages
+</pre>
+<p>Three characteristics are worth noting because they follow from constraint, not from taste:</p>
+<p><strong>No server, no intermediate database.</strong> One person operates this. Every piece of infrastructure is a piece to maintain at three in the morning. An ephemeral runner plus cloud storage covers the case and asks for no maintenance.</p>
+<p><strong>The visualisation layer is version-controlled as text.</strong> The 16 projects live in Git in text form, not binary. That makes model and report reviewable by diff — you can see which measure changed, and revert a broken one.</p>
+<p><strong>Ingestion speaks three different protocols.</strong> Some systems have an API. Others only have a screen, and are scraped by headless browser. One delivers by e-mail. The ingestion layer isolates that: for the rest of the pipeline, everything becomes the same thing.</p><h4>Three technical decisions, and what each one cost</h4><h4>1. A retroactive window per source, not global</h4>
+<p><strong>Decision.</strong> Each source declares how many days back to reprocess. The default is 45 days; one dataset uses 15.</p>
+<p><strong>Why.</strong> The sources do not lie in the same way. An expense system accepts backdated entries for weeks — if you only ingest what is new, you miss a correction made yesterday to a closed month. The checklist dataset, by contrast, is edited within a much shorter window, and rescanning 45 days there means redoing the same work six times every two hours.</p>
+<p><strong>Trade-off.</strong> It costs configuration and surface to get wrong: N windows to justify instead of one. That cost is real and is paid for with a test per source pinning the arithmetic. <strong>What does not get paid for is the alternative</strong> — a single window is either waste or data loss, and usually both, on different sources, which makes it hard to diagnose.</p>
+<h4>2. The quality gate aborts instead of publishing with a warning</h4>
+<p><strong>Decision.</strong> Before writing, each snapshot is compared with the last valid publication. Empty, a drop below half the previous volume, a missing required column, or blank keys above 5% raise an exception. <strong>Nothing is written.</strong> The previous file survives.</p>
+<p><strong>Why.</strong> A source that is down and answers with success and an empty body is not a hypothesis: it is a Tuesday. Without the gate, the pipeline would publish an empty file over a good one, and operations would open a zeroed dashboard with no idea why.</p>
+<p><strong>Trade-off.</strong> A false positive freezes the data until someone looks. That is the accepted cost, and it is the right side to err on: <strong>stale data is visibly stale; wrong data looks right.</strong> Whoever consumes it does not see a warning — they see the number.</p>
+<p><strong>What I learned afterwards.</strong> A variant of that gate saved a case I had not anticipated: when the destination file looked freshly created, publishing the incremental window over it would have overwritten the full history with a few weeks of data. Aborting was correct, and the guard existed because the rule had been written generically — &quot;is what I am about to write plausible given what is already there?&quot; — rather than enumerating the cases I could imagine.</p>
+<h4>3. A mandatory dry run before any new load</h4>
+<p><strong>Decision.</strong> Every new pipeline, or one changed in anything touching writes, first runs in a mode that executes everything — authenticates, downloads, normalises, validates — and writes nothing.</p>
+<p><strong>Why.</strong> The expensive part of these pipelines is not the processing, it is the side effect. Reverting a published file in a layer consumed by 16 visualisation projects is manual work, and visible to everyone who depends on it.</p>
+<p><strong>Trade-off.</strong> It delays every change by one execution cycle. In exchange, it turns the most expensive class of error — &quot;published the wrong thing to production&quot; — into one that shows up beforehand.</p><h4>Results, and how they were measured</h4><p><strong>Methodology first.</strong> The execution figures come from 4,108 records of the continuous integration history, between 2026-03-06 and 2026-08-26. Duration is wall-clock time of the run. Excluded were: the dependency bot, diagnostics, backfills, one-off runs, and one workflow that runs on a local runner — that one measures whether a machine was powered on, not code performance, and on its own accounted for 83% of a month&#x27;s runner time. <strong>3,687 runs</strong> remain. The comparison is the first month against the current one.</p>
+<p>| | March | August | | |---|---|---|---| | runs per day | 8.6 | 40.1 | <strong>4.7x</strong> | | median duration | 112s | 78s | 1.44x faster | | 90th percentile | 209s | 202s | <strong>flat</strong> | | success rate | 98.9% | 92.4% | <strong>−6.5 pp</strong> |</p>
+<p><strong>Throughput multiplied by 4.7 and the tail did not regress.</strong> That is the result that matters: scaling volume normally costs latency, and here p90 stayed where it was. That was deliberate — I track p90, not the mean, because it is the tail that blows a collection window.</p>
+<p><strong>On the mean, and why it is not in the table.</strong> Mean duration <em>got worse</em> over the period, from 124s to 141s. It is dragged by a few long runs and tells a story that the median and p90 contradict. I quote both ends — median and p90 — and I do not quote the mean, because a single central figure over a heavy-tailed distribution is misleading in whichever direction you use it.</p>
+<p><strong>And the cost, which is the most important line.</strong> Success rate fell 6.5 percentage points. More sources, more third-party integrations, more to fail. I do not treat that as noise: it is the price of the expansion and it is measured.</p>
+<p><strong>One detail that changes the reading:</strong> the series is not monotonic. July closed at 97.4% with 44.4 runs per day — the best of the six months. August fell to 92.4%. In other words, 6.5 points <strong>is not the fixed price of scale</strong>; there is a specific August regression I have not yet isolated.</p>
+<p><strong>The largest gain is the one with no number.</strong> Eliminating the analyst-day per cycle is the result that changed the operation, and its measurement is an account of the prior process corroborated by the architecture — <strong>it is not a stopwatch</strong>. I record that with medium confidence on purpose. The honest before/after (&quot;it was a day, today the data arrives ready&quot;) is more defensible than an inflated percentage, and I do not write &quot;100% reduction&quot; or &quot;8 hours a day&quot;: the old process was not eight continuous hours of work, it was a day punctuated by it.</p>
+<p><strong>Data quality findings the modelling exposed</strong>, all relative: 77% of maintenance spend with no work order attached; 21% of one safety dashboard&#x27;s events silently dropped due to incomplete records; 30% of driver-months with checklists filled in under four minutes — below the minimum time to actually inspect a vehicle. The third became a quality rule with a minimum and maximum band.</p><h4>What I would do differently</h4><p><strong>An alert on success rate, from the first month.</strong> I found the August drop by auditing history two months later. A metric that is only looked at when someone decides to audit is not being monitored — it is being remembered. It is the most expensive item on this list because it is the easiest to avoid.</p>
+<p><strong>A cost-of-execution dashboard.</strong> It took an audit to discover that 1.3% of runs were consuming 83% of a month&#x27;s runner time — 13 runs, ten of them the same workflow, averaging 16 hours with a 24-hour ceiling, none of them succeeding. That should have been obvious the day it started.</p>
+<p><strong>An explicit schema contract from the start.</strong> The first sources were integrated by reading what arrived and assuming it would keep arriving. A silent column change at the source is the class of failure that cost the most diagnostic time. The quality gate covers that today, but it was added after it hurt.</p>
+<p><strong>Separate what is measurable from what is not, before needing the number.</strong> I spent months carrying a performance claim inherited from an old résumé which, when I went to audit it, had no &quot;before&quot; to compare against — the characteristic supposedly causing the gain had been in the code since the file&#x27;s first commit. The number came out of everywhere. Had I instrumented the baseline before the change, I would have the real figure instead of a claim that does not survive a follow-up question.</p></div></details></article><article id="acompanhamento-de-producao-e-paradas-de-maquina-em-painel-ao"><h3>Production and machine-downtime tracking on a live dashboard</h3><p class="meta">Production manager — defined the indicator, built the flow and ran the weekly review · 2023-10 to 2024-09</p><p class="stack">Google Sheets · Looker Studio · Data Visualization · Food Manufacturing</p><p class="chamada">Downtime dashboard that disproved the hidden-loss hypothesis on the floor and supported opening a third shift, worth roughly 30% more output.</p><details><summary>Architecture, decisions and outcome</summary><div class="miolo"><h4>The problem</h4><p>A food manufacturer ran with four teams: production and packaging, each on a day and a night shift. Every Friday there was a results meeting with the owner to review the week&#x27;s gaps.</p>
+<p>The discussion ran on memory. Everyone knew a machine had stopped, but not for how long, nor how many times, nor for which reason and how often. Without that, the meeting became opinion: each shift remembered its own problem, and the decision went to whoever argued best, not to where the loss was largest.</p>
+<p>The underlying question was capacity: the plant could not keep up with order demand, and the backlog was growing. The hypothesis on the table was that losses were hiding in the stoppages — that more could be produced in the same time.</p><h4>Architecture</h4><pre>shift entries logged
+  during the week
+    │
+    ▼
+shared spreadsheet in the cloud
+  one row per stoppage
+  entry by shift, machine and reason
+    │
+    ▼
+dashboard wired to the sheet
+  refreshes as the entry
+  is typed; nothing to export
+    │
+    ▼
+weekly results meeting
+  the screen is the agenda
+</pre>
+<p>The underlying decision is the simplest one and the easiest to get wrong: <strong>the data is typed once, where it happens, and the dashboard reads from there.</strong> There is no consolidation step, nobody assembling the report the night before, and therefore no diverging version in circulation.</p><h4>Technical decisions</h4><ul><li><strong>The shared spreadsheet as a source, not as a report.</strong> The sheet stopped being where you look at the number and became only where you type it. Whoever looks, looks at the dashboard. Alternative rejected: keeping the analysis inside the spreadsheet with a summary tab — it works until two people edit the same cell, and then nobody can say which copy is the good one.</li></ul>
+<ul><li><strong>A dashboard wired to the sheet, not a weekly export.</strong> The number on screen is the number that was typed, with no gap between the two. Alternative rejected: generating a report on Thursday for Friday&#x27;s meeting — which is exactly what creates the &quot;when is this data from?&quot; question in the middle of the discussion.</li></ul>
+<ul><li><strong>One row per stoppage, with a mandatory reason.</strong> That is what makes it possible to sum by machine, by shift and by cause. Alternative rejected: logging only total downtime hours per day, which is faster to fill in and answers no useful question.</li></ul><h4>Outcome</h4><ul><li><strong>The weekly meeting started discussing measured data instead of memory</strong>, with the dashboard refreshed the moment an entry is typed.</li><li><strong>The measurement showed there was nothing to optimise.</strong> The stoppages were concentrated and necessary — maintenance, changeover, sanitation. The founding hypothesis, that hidden losses were there to recover, fell. That is the real result of this case, and it is a result: it saved the effort of chasing an efficiency that did not exist.</li><li><strong>With output already at capacity, the right decision stopped being &quot;optimise&quot; and became &quot;expand&quot;.</strong> The tracking supported opening a third, overnight shift, sized by the order demand and the backlog that the record had made visible.</li><li><strong>Output rose by roughly 30% with the third shift.</strong> The gain came from adding capacity, not from efficiency squeezed out of the existing process — and it was the measurement that showed that efficiency was not there to be squeezed. An approximate figure, reported by the person who ran the operation, with no formal audit.</li></ul></div></details></article><article id="camada-analitica-de-frota-16-projetos-versionados-em-git"><h3>Fleet analytics layer — 16 projects under version control</h3><p class="meta">Sole author — modelling, versioning, visual standard and audit · 2026-06 to present</p><p class="stack">Power BI · DAX · Dimensional Modeling · Power Query · Data Visualization</p><p class="chamada">Migration of 16 dashboards from binary files to Git-versioned projects, with 325 DAX measures reviewable by text diff.</p><details><summary>Architecture, decisions and outcome</summary><div class="miolo"><h4>The problem</h4><p>The fleet dashboards existed as binary Power BI files, each one saved over the last. That produces three problems that only surface later: there is no history — no way to know who changed which measure, when, or why; there is no review — a binary file has no readable diff; and there is no way back — a broken measure is only recovered from the backup somebody remembered to take.</p>
+<p>On top of that, each dashboard repeated its own transformation logic, its own table naming, and its own visual conventions. The same indicator came out differently in two reports, with nobody able to say which one was right.</p>
+<p>The prior state is measured: analysis began by downloading a report from each system and filling a spreadsheet with raw data, which consumed one full analyst-day per cycle. Today the data arrives dashboard-ready and the analysis starts the moment the file opens.</p>
+<p>The dashboards serve around 20 people in operations, covering a fleet of roughly 150 vehicles across four branches.</p><h4>Architecture</h4><pre>platform file layer
+    │
+    ▼
+shared dataflows
+  one transformation, reused
+  by several models
+    │
+    ▼
+16 projects in text format
+  version-controlled in Git
+  semantic model + report,
+  both readable and diffable
+    │
+    ▼
+publication to workspaces
+  reports by business area
+</pre>
+<p>Each project is a folder holding the semantic model and the report as text, not as binary. Tables follow a prefix by role — fact, dimension and calculated — and measures are centralised in their own table rather than scattered across the facts.</p><h4>Technical decisions</h4><ul><li><strong>Version the project as text, not the binary.</strong> This is the decision that carries all the others: model and report become readable files, with a reviewable diff, per-measure history and the ability to go back. Alternative rejected: staying on the binary and disciplining backups — that is what already existed, and it is what produced the problem.</li></ul>
+<ul><li><strong>Concentrate transformation in shared dataflows.</strong> Several models read the same source and each transformed it its own way. Transformation moved up into a shared layer, consumed by all of them. Alternative rejected: standardising by convention, trusting each model to repeat the same steps — which is exactly what fails silently.</li></ul>
+<ul><li><strong>Do not migrate the inventory model to the shared layer, and close the decision in writing.</strong> That model uses incremental refresh, which the shared layer does not support at the available licence tier. Migrating would make every refresh re-read three years of daily files against a two-hour window. Alternative rejected: migrating for consistency — the consistency would cost the executive dashboard its refresh.</li></ul>
+<ul><li><strong>A custom visual standard for the densest pages.</strong> Pages with many indicators are now designed as a single visual instead of dozens of native visuals stacked together. The gain was measured by Power BI&#x27;s own compliance audit. Alternative rejected: staying native, which is simpler to maintain but did not deliver the requested density without degrading the audit.</li></ul>
+<ul><li><strong>Pin the version of the model automation tooling, and treat updates as a manual act.</strong> The tools used to edit the model load at session start, before any verification. With a floating version, each session would run whatever was published that minute, with no record and no reproducibility. The written rule rejects any version published less than 48 hours ago — the window in which a malicious publication has not yet been caught by the ecosystem. Alternative rejected: always using the latest version, which is convenient and hands the security decision to chance.</li></ul>
+<ul><li><strong>Automatic guards against destructive commands and secret exposure.</strong> The repository has checks that intercept dangerous operations before they run. Alternative rejected: relying on the attention of whoever is editing — which works until the tired day.</li></ul>
+<ul><li><strong>Measure before concluding, including about the repository itself.</strong> It is written into the project&#x27;s documentation: any claim about the repository comes from reading code, history or a run, never from assumption; where it could not be measured, it says so. The rule came from a real mistake — a dashboard count table diverged from reality in three places.</li></ul><h4>Outcome</h4><ul><li><strong>16 Power BI projects</strong> version-controlled in Git, totalling <strong>325 DAX measures</strong>, <strong>282 tables</strong>, <strong>98 pages</strong> and <strong>1,004 visuals</strong>. Source: count in the repository on 2026-08-23.</li><li><strong>727 commits</strong> between 2026-06-29 and 2026-08-12. Source: git history.</li><li><strong>Around 20 people</strong> consume the dashboards, covering a fleet of roughly <strong>150 vehicles</strong> across four branches.</li><li><strong>The compliance audit of one dashboard fell from 39 errors and 18 warnings to 3 errors and 5 warnings</strong> after adopting the custom visual standard; another closed at <strong>0 errors and 6 warnings</strong>, the 6 being structural — the validator does not recognise the custom visual&#x27;s identifier. Source: Power BI&#x27;s own audit report.</li><li><strong>Data quality findings that the modelling exposed</strong>, all relative: - <strong>77% of maintenance spend had no work order attached</strong> — reconciliation covered only a minority of the documents. - One safety dashboard was <strong>silently dropping 21% of events</strong>, due to incomplete owner records. - <strong>30% of driver-months</strong> had checklists filled in <strong>in under four minutes</strong> — below the minimum time to actually inspect a vehicle. The finding became a quality rule, with a minimum and maximum band. - A dead table left <strong>66% of one indicator orphaned</strong>, and duplicate names in the registry inflated a dashboard&#x27;s count.</li></ul></div></details></article><article id="inteligencia-de-custo-de-frota-com-dados-abertos-pipeline-pu"><h3>Fleet cost intelligence from open data — a public pipeline</h3><p class="meta">Sole author and maintainer — architecture, implementation, operation · 2026-08 to present · <a href="https://github.com/gbrwalker/fleet-cost-intel">code on GitHub</a></p><p class="stack">Python · ETL · GitHub Actions · CI/CD · Data Quality</p><p class="chamada">Public Python pipeline over Brazilian open fuel-price data, with a per-source retroactive window, quality gates that abort publication, and 40 tests in continuous integration behind a 60% coverage gate.</p><details><summary>Architecture, decisions and outcome</summary><div class="miolo"><h4>The problem</h4><p>The data engineering work I run in production is private and nobody can open it. That is a real career problem: a recruiter cannot assess what they cannot read.</p>
+<p>This repository exists to solve that — the same engineering, on data that can be shown. It answers: <strong>what it costs to run a truck per kilometre, by state and by month, and how that cost moves against the regulated minimum freight floor.</strong></p><h4>Architecture</h4><p>Two sources that mutate in different ways, and that difference is what gives the project substance:</p>
+<ul><li><strong>ANP — weekly prices.</strong> The current semester&#x27;s file is <strong>rewritten</strong> on every publication, so a week already ingested can change. This forces a retroactive window and idempotent reprocessing.</li><li><strong>ANP — monthly sales.</strong> Month M closes at the end of M+1. This forces handling provisional data and its flip to final, which is a different problem.</li><li><strong>ANTT — freight floor.</strong> A reference table maintained by hand.</li></ul>
+<p>The flow is <code>ingest → normalize → transform → publish</code>, with the quality gates at the publication boundary and not before. Validating early protects the processing; validating at the boundary protects <strong>the consumer</strong> — and only the second one matters when something goes wrong.</p><h4>Technical decisions</h4><p><strong>A retroactive window per source, never global.</strong> Prices look back 200 days; sales, 70. A single window for different behaviours is either waste or data loss, and usually both, on different sources.</p>
+<p><strong>The gates abort, they do not warn.</strong> An empty snapshot, a volume drop below half, a missing key column, empty keys above 5%, a price out of range or a missing month all raise an exception and <strong>nothing is written</strong>. Bad data published is worse than stale data: whoever consumes it does not see the warning, they see the number.</p>
+<p><strong>Station-level detail is dropped and never republished.</strong> The raw file identifies every retailer by tax ID and street address. Aggregating to state level is a modelling decision that is also the privacy decision, and a test asserts that a tax ID from the real file never appears in the output — so it cannot regress quietly.</p><h4>Outcome</h4><ul><li><strong>40 tests, 74% coverage</strong>, with a 60% gate in CI. Clean lint.</li><li>Runs against the live ANP servers: <strong>22,625 fleet-fuel rows</strong> out of 72,049 downloaded, aggregated by <code>(state, month, product)</code>.</li><li><strong>Schema verified by downloading the real 3.8 MB file</strong>, not assumed from documentation. Three traps of Brazilian public data each have a test: UTF-8 <strong>with BOM</strong> (the first column vanishes silently), the <code>;</code> separator, and the decimal comma that turns <code>6,79</code> into <code>679</code>.</li><li>Idempotency in three layers — hash at ingestion, natural key at transformation, atomic write at publication — <strong>proved in tests</strong>, not asserted in the README.</li></ul></div></details></article><p class="divisor">Coursework — exercises from the data science programme, on public data</p><div class="formacao-grade"><article class="leve" id="analise-de-avaliacoes-de-clientes-com-llm-sentimento-topico-"><h3>Customer review analysis with an LLM — sentiment, topic, polarization and entity in a single call</h3><p class="meta">Sole author — collection, prompt engineering, processing loop and consolidation · coursework project · 2025-05</p><p class="stack">Python · Pandas · NumPy · Generative AI for Data · LLM via API</p><p class="chamada">Customer review classification with an LLM (Google Gemini) over API: prompt engineering with structured output as a Python dictionary, collapsing sentiment, topic, polarization and entity from four calls into one.</p><details><summary>Outcome and methodology</summary><div class="miolo"><h4>Outcome</h4><p>The demonstrated loop processes a sample of 10 reviews, stacking the output into a DataFrame with the four dimensions per row. It is a coursework proof of concept, not a production system: there is no accuracy evaluation against human labels, and the volume is demonstration-sized.</p></div></details></article><article class="leve" id="classificacao-de-sobreviventes-do-titanic-engenharia-de-atri"><h3>Titanic survival classification — feature engineering, SMOTE and XGBoost</h3><p class="meta">Sole author — feature engineering, pipeline, hyperparameter search and submission · coursework project</p><p class="stack">Python · Pandas · XGBoost · Machine Learning · scikit-learn</p><p class="chamada">XGBoost classifier with SMOTE and 3 derived features over 891 Titanic passengers: 82.8% accuracy in 5-fold cross-validation against 61.6% for the majority-class baseline.</p><details><summary>Outcome and methodology</summary><div class="miolo"><h4>Outcome</h4><ul><li><strong>82.8% accuracy in 5-fold cross-validation, against 61.6% for the majority-class baseline</strong> — 738 correct out of 891 versus 549. A 21.2 percentage-point gain over doing nothing.</li><li><strong>Confusion matrix:</strong> 488 true negatives, 61 false positives, 92 false negatives, 250 true positives.</li><li><strong>By class:</strong> did not survive — precision 0.84, recall 0.89, F1 0.86 (549 cases); survived — precision 0.80, recall 0.73, F1 0.77 (342 cases). The model errs toward calling a passenger dead: it misses 92 of the 342 survivors.</li><li><strong>Best combination from the search:</strong> <code>learning_rate</code> 0.05, <code>max_depth</code> 5, <code>n_estimators</code> 200, <code>subsample</code> 0.8, <code>colsample_bytree</code> 0.8, <code>min_child_weight</code> 5, averaging 83.4% accuracy across the 5 folds — measured over <strong>1,620 training runs</strong> (324 combinations × 5 folds).</li><li><strong>418 predictions generated</strong> in the format the competition requires (<code>submission.csv</code>).</li></ul>
+<p>The Kaggle public leaderboard score is missing, and that matters: without it there is no metric scored by a third party. The 82.8% is self-evaluation on the training set, and leaderboard accuracy usually lands below that — which is why the figure is always quoted here as &quot;in cross-validation&quot;.</p></div></details></article><article class="leve" id="deteccao-de-fraude-em-cartao-de-credito-xgboost-contra-svm-e"><h3>Credit card fraud detection — XGBoost against SVM on an imbalanced dataset</h3><p class="meta">Sole author — preprocessing, training both models, evaluation and report · coursework project · 2025-12</p><p class="stack">Python · Pandas · NumPy · Matplotlib · Machine Learning</p><p class="chamada">Fraud classification over 283,726 transactions with 0.17% positives: XGBoost at 86.4% recall and 0.977 AUC-ROC against an SVM at 91.5% recall and 6,452 false positives.</p><details><summary>Outcome and methodology</summary><div class="miolo"><h4>Outcome</h4><p>Test set: <strong>70,932 transactions, 118 of them fraud (0.166%)</strong>.</p>
+<ul><li><strong>XGBoost — 86.4% recall (102 of 118 frauds), 24.9% precision, F1 0.386.</strong> Confusion matrix: 70,506 true negatives, 308 false positives, 16 false negatives, 102 true positives. Threshold 0.05.</li><li><strong>Tuned SVM — 91.5% recall (108 of 118 frauds), 1.6% precision, F1 0.032.</strong> Confusion matrix: 64,362 true negatives, 6,452 false positives, 10 false negatives, 108 true positives.</li><li><strong>XGBoost AUC-ROC: 0.977, against 0.5 for a random classifier.</strong> That is the comparison that counts on this dataset. The notebook records in text that both models cleared 0.96 and that XGBoost reached 0.977; <strong>the SVM&#x27;s exact AUC exists only inside the plot and was never printed</strong> — it sits between 0.96 and 0.977, and no closed figure can be quoted.</li><li><strong>Neither model&#x27;s accuracy should be quoted.</strong> XGBoost scored 99.54% and the SVM 90.89%, both <strong>below</strong> the 99.83% the majority-class baseline delivers without learning anything. It is the textbook demonstration of a metric being wrong, not of the models being bad.</li><li><strong>A measured trade-off, not an opinion:</strong> the SVM catches 6 more frauds than XGBoost and charges <strong>6,144 more false positives</strong> for it — from 308 to 6,452, a factor of 21. Each false positive is a legitimate transaction blocked or a manual review opened.</li></ul>
+<p>The conclusion recorded in the report alongside the notebook is to use XGBoost as the primary model and the SVM as a complementary layer during elevated-risk windows. It is a coursework recommendation: neither was ever run against real data.</p></div></details></article><article class="leve" id="previsao-de-qualidade-de-vinho-tinto-quando-reformular-o-pro"><h3>Red wine quality prediction — when reframing the problem beats tuning the model</h3><p class="meta">Sole author — exploratory analysis, derived features, modelling and critical evaluation · coursework project</p><p class="stack">Python · Pandas · Machine Learning · Applied Statistics · Exploratory Data Analysis</p><p class="chamada">Random Forest over 1,599 red wine samples: 66.0% accuracy across 6 classes against 42.5% for the majority-class baseline, and the finding that hyperparameter search bought 0.25 percentage points.</p><details><summary>Outcome and methodology</summary><div class="miolo"><h4>Outcome</h4><ul><li><strong>Version 1, 6 classes — 66.0% accuracy, against 42.5% for the majority-class baseline.</strong> A 23.5 percentage-point gain. Classes 5 and 6 carry the number: F1 of 0.74 and 0.66. Classes 3 and 4 came out with precision and recall of <strong>zero</strong> — the model never predicts them; class 8 got 1 of the 5 test samples right (precision 0.50, recall 0.20, F1 0.29). Macro F1 of 0.36 against weighted F1 of 0.64: the gap between the two is the measure of the imbalance.</li><li><strong>Hyperparameter search — 66.25% accuracy, a 0.25 percentage-point gain</strong> over the 66.0% of the default model, after 50 combinations sampled from a grid of 1,800 with 3-fold cross-validation. The rare classes did not move: 3 and 4 stayed at zero and class 8 kept its single hit. It is the most useful result of the exercise: it measures that the problem was never in the hyperparameters.</li><li><strong>Version 2, 3 classes — 87.5% accuracy, against 82.5% for the majority-class baseline.</strong> The jump from 66% to 87.5% looks large and is not: the problem changed. Against the correct baseline the gain is <strong>5 percentage points</strong>, 4.7 times smaller than the 23.5 of the 6-class version. Comparing 87.5% with 66.0% would be comparing a 6-choice test with a 3-choice one.</li><li><strong>The &quot;poor&quot; class stayed invisible.</strong> Of the 16 poor samples in the test set, <strong>none was predicted</strong> — all were classified as average. Macro F1 of 0.53. Regrouping hid the imbalance; it did not solve it.</li></ul>
+<p>The finding that holds is worth more than the metric: the gain came from reframing the target and from accepting that, with 10 and 18 samples, no hyperparameter teaches the extreme classes. The notebook&#x27;s closing remarks credit part of the gain to derived features, and that half does not hold up in the code.</p></div></details></article></div>
+
+<h2 id="competencias">Skills with evidence</h2>
+<p class="grupo"><b>Languages:</b> Python, SQL, DAX, JavaScript, Pandas, NumPy.</p><p class="grupo"><b>Storage and Modeling:</b> PostgreSQL, Dimensional Modeling (Star Schema), Relational Modeling.</p><p class="grupo"><b>Orchestration and Pipelines:</b> ETL (Extract, Transform, Load), Power Automate, GitHub Actions, Asynchronous Processing (asyncio), Web scraping, Playwright, REST APIs.</p><p class="grupo"><b>Visualization and Business Intelligence (BI):</b> Power BI, Power Query, Google Sheets, Data Visualization, Matplotlib, Seaborn, Looker Studio.</p><p class="grupo"><b>Cloud and Infrastructure:</b> Google Cloud (service account and APIs), Cloud tools for storage and pipelines, Ephemeral runner execution (serverless), Google Drive API.</p><p class="grupo"><b>Statistics and Machine Learning:</b> Generative AI for Data, LLM via API, Prompt Engineering, Natural Language Processing (NLP), Machine Learning, Applied Statistics, scikit-learn, XGBoost, Exploratory Data Analysis (EDA).</p><p class="grupo"><b>Engineering Practices:</b> Git, CI/CD (Continuous Integration / Continuous Delivery), Data Quality, Data Governance, Automated Testing.</p><p class="grupo"><b>Business Domain:</b> Logistics, Fleet Management, Food Manufacturing.</p>
+
+<h2>Education and credentials</h2>
+<ul><li><strong>Análise e Desenvolvimento de Sistemas</strong> — UNINASSAU, 2025-02</li><li><strong>Profissão: Cientista de Dados</strong> — EBAC — Escola Britânica de Artes Criativas e Tecnologia, 2025-12</li><li><strong>Inglês — trilha completa até Teens Higher 2 e Focus Final</strong> — Fisk Centro de Ensino — Pimenta Bueno/RO, 2015-06</li><li><a href="https://www.datacamp.com/certificate/DE0015257350668">Data Engineer</a> — DataCamp, 2026-08</li><li><a href="https://www.datacamp.com/certificate/DEA0011211917063">Associate Data Engineer</a> — DataCamp, 2026-08</li><li><a href="https://www.datacamp.com/certificate/DAA0019999555307">Associate Data Analyst</a> — DataCamp, 2026-08</li><li><a href="https://freecodecamp.org/certification/walkerz33/javascript-algorithms-and-data-structures">JavaScript Algorithms and Data Structures</a> — freeCodeCamp, 2023-07</li><li><a href="https://freecodecamp.org/certification/walkerz33/responsive-web-design">Responsive Web Design</a> — freeCodeCamp, 2023-06</li></ul>
+
+<h2 id="contato">Contact</h2>
+<p class="resumo" style="margin-bottom:22px">I answer e-mail the same business day. For a role, the shortest path is to send the job description — I reply saying which requirements I cover and which I do not, linking to the case that backs each one.</p>
+<div class="contato">
+  <a href="mailto:gabrielwalker14@gmail.com?subject=Role%20—%20Gabriel%20Walker">
+    <span class="ic" aria-hidden="true">✉</span>
+    <span><span class="rot">E-mail — preferred</span><span class="val">gabrielwalker14@gmail.com</span></span>
+  </a>
+  <a href="https://www.linkedin.com/in/gbrwalker">
+    <span class="ic" aria-hidden="true">in</span>
+    <span><span class="rot">LinkedIn</span><span class="val">/in/gbrwalker</span></span>
+  </a>
+  <a href="https://github.com/gbrwalker">
+    <span class="ic" aria-hidden="true">&lt;/&gt;</span>
+    <span><span class="rot">GitHub — open source</span><span class="val">/gbrwalker</span></span>
+  </a>
+  <span class="cartao-info">
+    <span><span class="rot">Where and when</span><span class="val">Pimenta Bueno – RO, UTC-4 · remote, Brazil and abroad</span></span>
+  </span>
+</div>
+
+<footer>Generated from a versioned base by <code>scripts/gerar_portfolio.py</code>. The production cases are sanitised: they describe problem, architecture, decision and outcome, with no code, no data and no system names. Every number has a reproducible source in the originating repository.</footer>
+</div>
+
+<script>
+// Tema. Ordem: escolha salva > preferência do sistema. A escolha vence, e
+// persiste — trocar de tema e perder na próxima visita é pior que não ter botão.
+(function () {
+  var raiz = document.documentElement, botao = document.getElementById('tema');
+  var salvo = null;
+  try { salvo = localStorage.getItem('tema'); } catch (e) {}
+  if (salvo) raiz.setAttribute('data-tema', salvo);
+  function rotulo() {
+    var escuro = raiz.getAttribute('data-tema') === 'escuro' ||
+      (!raiz.getAttribute('data-tema') &&
+       matchMedia('(prefers-color-scheme: dark)').matches);
+    botao.textContent = escuro ? '☀' : '☾';
+    botao.setAttribute('aria-label',
+      escuro ? 'Mudar para tema claro' : 'Mudar para tema escuro');
+  }
+  rotulo();
+  botao.addEventListener('click', function () {
+    var escuro = raiz.getAttribute('data-tema') === 'escuro' ||
+      (!raiz.getAttribute('data-tema') &&
+       matchMedia('(prefers-color-scheme: dark)').matches);
+    var novo = escuro ? 'claro' : 'escuro';
+    raiz.setAttribute('data-tema', novo);
+    try { localStorage.setItem('tema', novo); } catch (e) {}
+    rotulo();
+  });
+
+  // Marca a seção em que o leitor está.
+  //
+  // NÃO por interseção. A versão anterior usava IntersectionObserver com
+  // `rootMargin:'-78px 0px -70% 0px'`, o que deixava uma faixa de observação
+  // de 192px numa tela de 900: um <h2> de 20px só contava enquanto
+  // atravessava essa faixa. Medido em 24 posições da página, 20 delas (83%)
+  // não marcavam NADA, e `#contato`, sendo a última seção, nunca acendia —
+  // no fim da página o navegador não rola mais e o título nunca entra na
+  // faixa. Um marcador que passa 5/6 do tempo dizendo "em lugar nenhum" é
+  // pior que não ter marcador.
+  //
+  // A regra certa é de posição, não de visibilidade: vale a ÚLTIMA seção cujo
+  // topo já passou da base da barra. E o fim da página força a última.
+  var alvos = [].slice.call(document.querySelectorAll('h2[id]'));
+  var elos = {};
+  [].forEach.call(document.querySelectorAll('.barra nav a'), function (a) {
+    elos[a.getAttribute('href').slice(1)] = a;
+  });
+  function marcar() {
+    var barra = document.querySelector('.barra');
+    // +26, não +8. A âncora para o título a `altura da barra + 14` do topo
+    // (é o `scrollPaddingTop`), e o limiar de 8 ficava ACIMA disso: clicar em
+    // "Competências" rolava a página e o indicador continuava em "Casos",
+    // porque o título recém-alvejado não tinha "passado" do limiar. O limiar
+    // precisa ficar abaixo de onde a âncora deposita o título.
+    var base = (barra ? barra.getBoundingClientRect().height : 56) + 26;
+    var atual = null;
+    for (var i = 0; i < alvos.length; i++) {
+      if (alvos[i].getBoundingClientRect().top <= base) atual = alvos[i].id;
+    }
+    // A última seção nunca alcançava a regra de posição: `#contato` fica a
+    // 253px além do curso máximo de rolagem, então o topo dela jamais sobe
+    // até a base da barra. A cláusula anterior dependia de parar EXATAMENTE
+    // no batente (tolerância de 2px) — inércia de trackpad ou a barra de URL
+    // do celular mudando 1px de altura já derrubavam.
+    // A regra certa é de VISIBILIDADE para o último item: se ele entrou na
+    // janela, é onde o leitor está.
+    var ultimo = alvos[alvos.length - 1];
+    if (ultimo && elos[ultimo.id] &&
+        ultimo.getBoundingClientRect().top < window.innerHeight * 0.9) {
+      atual = ultimo.id;
+    }
+    for (var id in elos) elos[id].classList.toggle('ativo', id === atual);
+  }
+  var agendado = false;
+  function agendar() {
+    if (agendado) return;
+    agendado = true;
+    requestAnimationFrame(function () { agendado = false; marcar(); });
+  }
+  addEventListener('scroll', agendar, { passive: true });
+  addEventListener('resize', agendar);
+  marcar();
+
+  // `scroll-padding-top` do CSS é fixo; a barra muda de altura conforme a
+  // largura. Sincronizar em JS impede que o título fique atrás dela.
+  function ajustarPadding() {
+    var barra = document.querySelector('.barra');
+    if (barra) document.documentElement.style.scrollPaddingTop =
+      (barra.getBoundingClientRect().height + 14) + 'px';
+  }
+  ajustarPadding();
+  addEventListener('resize', ajustarPadding);
+})();
+</script>
+</body>
+</html>
